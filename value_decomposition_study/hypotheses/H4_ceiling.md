@@ -30,9 +30,16 @@ Data: `results/slack/*/h4_ceiling.csv`.
   strictly worse) — anticipatory stock is nearly redundant WITH instant rerouting, in the
   slack regime.
 
-**Verdict.** CONFIRMED, decisively: **in the simple scenario the room for learned policies
-is ≈1% with information sharing, and the gap without information sharing is unreachable by
-intelligence at any level of sophistication.** The "room for RL" question in the slack
-regime is closed. TRY going forward: nothing further here; the open question moves to the
-saturated regime (Phase 2), where stock is the only source of product and the calculus can
-genuinely change.
+**Verdict.** CONFIRMED at the time — **CORRECTED by the A1 verification (2026-06-11):**
+this ceiling was NOT a true superset: its JIT buffer sat at the DISRUPTED DS (the location
+later shown worthless). The properly-constructed superset (deployable compound + JIT buffer
+at the HEALTHY DS) reaches **180,137** (tuning) — foresight DOES add value when the buffer
+is correctly located: ~36k is deployable at zero lead (signal-triggered onset buffer),
+~54k (~5% of baseline cost) is true pre-onset foresight. Reporting runs:
+`a1_superset_B240_lead10` / `_zerolead` (seeds 11–30).
+**Bounded restatement (A2):** "room for learned policies ≈ 0" means: no rule in the
+enumerated family {buffer (size × location × timing), taper, throttle, SS-freeze,
+reroute (trigger × share), allocation (12 rules)} leaves measurable residual room above the
+best composition; a learned policy would need a mechanism none of these expresses, and we
+identify no such candidate. This bounds the FAMILY, not all possible policies — and A1
+itself demonstrates why the distinction matters (one mis-located lever hid ~90k).

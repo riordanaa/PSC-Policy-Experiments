@@ -27,8 +27,10 @@ TOL = 1e-9
 def _args(**over):
     ns = argparse.Namespace(
         alloc_rule='prio_hc1', buffer_b=0, buffer_loc='disrupted', jit_lead=10,
-        taper_thresh=0.5, taper_m=1.0, throttle_c=1.2, ss_freeze=0,
-        theta_down=0.5, w_down=3, theta_up=0.6, w_up=3)
+        taper_thresh=0.5, taper_m=1.0, throttle_c=0, ss_freeze=0,
+        theta_down=0.5, w_down=3, theta_up=0.6, w_up=3, gamma=0.5,
+        mn_taper=0, b_elev=0, recovery_dwell=0, prebook_f=0, smooth_cap=0,
+        oo_gamma=-1, alloc_alpha=0.2)
     for k, v in over.items():
         setattr(ns, k, v)
     return ns
@@ -112,6 +114,30 @@ def g5(regime):
     return ok
 
 
+def g7():
+    """dsseat with all knobs off + proportional allocation must reproduce the routing
+    study's rung-a world bit-for-bit (thesis world; as-shipped HC layer, delta 0.1)."""
+    ref = pd.read_csv(os.path.join(ROOT, 'routing_study', 'results', 'urgent0', 'a.csv'))
+    ref = ref[ref['seed'] == 11].sort_values('period').reset_index(drop=True)
+    a = _args(alloc_rule='proportional')
+    new = run_vds.run_policy('dsseat_gate', 'urgent0', [11], a).sort_values(
+        'period').reset_index(drop=True)
+    return _compare(ref, new, 'G7 (dsseat knobs-off == rung-a world)')
+
+
+def g8():
+    """Post-refactor equivalence: h5_compound_full through the restructured ShapedDS must
+    reproduce its own on-disk reporting CSV (proves the mn_down/taper refactor is inert)."""
+    ref = pd.read_csv(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                   'results', 'slack', 'urgent0',
+                                   'h5_compound_full.csv'))
+    ref = ref[ref['seed'] == 11].sort_values('period').reset_index(drop=True)
+    a = _args()
+    new = run_vds.run_policy('h5_compound_full', 'urgent0', [11], a).sort_values(
+        'period').reset_index(drop=True)
+    return _compare(ref, new, 'G8 (h5 reproduction post-refactor)')
+
+
 def g6(regime):
     a = _args(alloc_rule='proportional')
     df = run_vds.run_policy('c_plain', 'urgent0', [11], a, regime=regime)
@@ -133,7 +159,8 @@ if __name__ == '__main__':
     ap.add_argument('--regime', default='slack')
     args = ap.parse_args()
     fns = {'1': g1, '2': g2, '3': g3, '4': g4,
-           '5': lambda: g5(args.regime), '6': lambda: g6(args.regime)}
+           '5': lambda: g5(args.regime), '6': lambda: g6(args.regime),
+           '7': g7, '8': g8}
     results = {g: fns[g]() for g in args.gates.split(',')}
     print('\nSUMMARY:', {k: ('PASS' if v else 'FAIL') for k, v in results.items()})
     sys.exit(0 if all(results.values()) else 1)

@@ -61,3 +61,38 @@
   deferred in-scope items listed. Nothing beyond approved scope was executed.
 - Final report: `report/value_decomposition_report.pdf` (5 pages, summary top,
   next steps end). No gate failures all night; no kill conditions tripped.
+
+## 2026-06-11 — Part A verification results + Part B incident log
+
+- **A1 REFUTES "foresight adds nothing":** superset oracle (compound + JIT buffer at the
+  HEALTHY DS) = 180,137 tuning vs deployable 270,759. Decomposed: zero-lead (deployable)
+  buffer captures ~36k; true pre-onset foresight adds ~54k (~5% of baseline). The old
+  ceiling's buffer sat at the worthless (disrupted) location. Reporting runs done
+  (a1_superset_B240_lead10 / _zerolead, seeds 11–30).
+- **A3: slack buffer negative was location-specific:** healthy-located standing buffers buy
+  +38–75k even in slack (B480 reporting run done). H2 restated.
+- **INCIDENT (Part B first screen, all results DISCARDED):** three wiring bugs contaminated
+  the first DS-seat screen — CLI default --throttle-c=1.2 silently activated the throttle in
+  every run (gates passed because gate-args had it off: gate-args/CLI-defaults divergence);
+  ordering families ran with default prio_hc1 allocation instead of proportional; watch_mn
+  was only wired when the taper knob was set, so elevated/prebook/shed never saw the MN
+  signal (exposed by bit-identical rows). Fixes: throttle default 0, needs_mn_watch flag,
+  explicit flags on every run, and a NEW CLI-PATH GATE (dsseat via the actual CLI must
+  reproduce rung-a bit-for-bit — PASS). Clean screen re-launched; no conclusions were drawn
+  from the contaminated batch.
+
+## 2026-06-11 — Part B COMPLETE (H8); HARD DECISION POINT reached
+
+- **The user's hypothesis test, answered (reporting seeds, thesis world, thesis metric):**
+  best simple DS-seat compound (shed x taper x standing-B480) removes **49.1%** (urgent0) /
+  ~50% (urgent20) of base stock's PSC-profit loss, with better fill (0.858 vs 0.808) and
+  fewer lost patients (1,575 vs 1,768). vs thesis RL claim of ~89% (Table 3.9, unreplicated).
+- Mechanisms: demand-shaping REAL (shed +21.8%, both HCs better, control shed_inverse
+  −14.3%); taper +24.9% but bookkeeping-driven and +9% lost patients ALONE (shed offsets it);
+  state-elevated DEAD by supply physics (elevated-climb check: during-inv 4 units); standing
+  buffer +5%. Checked outputs all executed (climb / sign-flip / per-HC).
+- Part A corrections applied to cards: foresight ≈ +54k when buffer correctly located
+  (H4 corrected); slack buffer negative is location-specific (H2 qualified); bounded "room"
+  phrasing in place (A2).
+- Independent Part A+B audit agent running. **Part C NOT started — awaiting user review of
+  Part B per the plan's hard decision point.**

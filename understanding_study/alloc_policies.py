@@ -45,7 +45,9 @@ def _recent_incoming_by_src(agent, now, window=5):
     return vol
 
 
-def flexible_allocate(agent, rule, now):
+def flexible_allocate(agent, rule, now, ctx=None):
+    """ctx: optional decision-maker instance carrying state for the stateful rules
+    (mn_down flag, EMA weights, cumulative fill counters). Stateless rules ignore it."""
     backlog = agent.backlog_level()
     inventory = agent.inventory_level()
     if inventory == 0 or backlog == 0:
@@ -87,6 +89,72 @@ def flexible_allocate(agent, rule, now):
         first = hcs[now % len(hcs)] if hcs else None
         order = ([first] if first else []) + [a for a in demand_of if a != first]
         allocate_to = _priority_caps(agent, demand_of, inventory, order)
+    elif rule in ('shed_timed', 'shed_inverse'):
+        # DS-seat demand-shaping (rung-a world): while this DS's MN is down (ctx.mn_down,
+        # wired from the shared upstream signal), strict priority to ONE HC:
+        #   shed_timed   -> the captive HC (equal-split, sorted last): serve the customer
+        #                   whose demand is stuck here; let the trust-routed HC leave faster
+        #   shed_inverse -> the trust-routed HC (control: protect the footloose customer)
+        # Outside the down window: plain proportional.
+        down = bool(getattr(ctx, 'mn_down', False)) if ctx is not None else False
+        if down:
+            hcs = sorted(a for a in demand_of if a.startswith('hc_'))
+            first = hcs[-1] if rule == 'shed_timed' else hcs[0]
+            order = [first] + [a for a in demand_of if a != first]
+            allocate_to = _priority_caps(agent, demand_of, inventory, order)
+        else:
+            allocate_to = {ag: int(min(demand_of[ag],
+                                       (float(demand_of[ag] * inventory) / backlog)))
+                           for ag in agent.downstream_nodes}
+    elif rule == 'smoothed_backlog':
+        # backlog-leaning split with EMA smoothing: tests whether SHARPNESS (not direction)
+        # is what the trust loop punishes. alpha from ctx.alloc_alpha (default 0.2).
+        alpha = float(getattr(ctx, 'alloc_alpha', 0.2)) if ctx is not None else 0.2
+        ema = getattr(ctx, '_alloc_ema', None)
+        if ema is None:
+            ema = {a: 1.0 / max(1, len(agent.downstream_nodes))
+                   for a in agent.downstream_nodes}
+        tot_b = sum(demand_of.values())
+        for a in agent.downstream_nodes:
+            share = demand_of[a] / tot_b if tot_b > 0 else 1.0 / len(demand_of)
+            ema[a] = (1 - alpha) * ema.get(a, 0.5) + alpha * share
+        if ctx is not None:
+            ctx._alloc_ema = ema
+        sum_w = sum(ema.values()) or 1.0
+        allocate_to = {a: int(min(demand_of[a], inventory * ema[a] / sum_w))
+                       for a in agent.downstream_nodes}
+    elif rule == 'fill_equalize':
+        # allocate to equalize cumulative planned-fill across HCs: weights ~ (1 - fill_i)
+        cd = getattr(ctx, '_cum_dem', {}) if ctx is not None else {}
+        ca = getattr(ctx, '_cum_alloc', {}) if ctx is not None else {}
+        w = {}
+        for a in agent.downstream_nodes:
+            fill_i = (ca.get(a, 0.0) / cd[a]) if cd.get(a, 0) > 0 else 0.0
+            w[a] = max(0.05, 1.0 - fill_i)
+        sum_w = sum(w.values()) or 1.0
+        allocate_to = {a: int(min(demand_of[a], inventory * w[a] / sum_w))
+                       for a in agent.downstream_nodes}
+    elif rule == 'smoothed_captive_gated':
+        # the trust-aware cell: while down, EMA-smoothed lean toward the captive HC
+        # (target weight 0.75) instead of a hard cutover; reverts smoothly after recovery
+        alpha = float(getattr(ctx, 'alloc_alpha', 0.2)) if ctx is not None else 0.2
+        down = bool(getattr(ctx, 'mn_down', False)) if ctx is not None else False
+        hcs = sorted(a for a in demand_of if a.startswith('hc_'))
+        captive = hcs[-1]
+        target = {a: (0.75 if a == captive else 0.25 / max(1, len(hcs) - 1))
+                  for a in agent.downstream_nodes} if down else \
+                 {a: 1.0 / max(1, len(agent.downstream_nodes))
+                  for a in agent.downstream_nodes}
+        ema = getattr(ctx, '_alloc_ema', None)
+        if ema is None:
+            ema = dict(target)
+        for a in agent.downstream_nodes:
+            ema[a] = (1 - alpha) * ema.get(a, target[a]) + alpha * target[a]
+        if ctx is not None:
+            ctx._alloc_ema = ema
+        sum_w = sum(ema.values()) or 1.0
+        allocate_to = {a: int(min(demand_of[a], inventory * ema[a] / sum_w))
+                       for a in agent.downstream_nodes}
     elif rule == 'prio_floor':
         # strict priority to hc-first, but the other HC is guaranteed a floor of 25%
         # of available inventory first (fairness floor under scarcity)
@@ -105,6 +173,14 @@ def flexible_allocate(agent, rule, now):
         raise ValueError(f'unknown allocation rule: {rule}')
 
     allocated = sum(allocate_to.values())
+
+    if ctx is not None:   # cumulative counters for fill_equalize
+        cd = getattr(ctx, '_cum_dem', {})
+        ca = getattr(ctx, '_cum_alloc', {})
+        for a in agent.downstream_nodes:
+            cd[a] = cd.get(a, 0.0) + demand_of[a]
+            ca[a] = ca.get(a, 0.0) + allocate_to.get(a, 0)
+        ctx._cum_dem, ctx._cum_alloc = cd, ca
 
     # FIFO backlog walk — verbatim from allocate_proportional (decision_maker.py:434-461)
     inv_ptr = 0

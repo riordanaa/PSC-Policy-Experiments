@@ -1,5 +1,16 @@
 # NEXT_PLAN — written after Phases 1+2 complete (2026-06-10)
 
+> **UPDATE 2026-06-11 (post Part A verification + Part B / H8):** the decision now in front
+> of the user is (a) whether to run Part C (severity-aware redirect across the map +
+> demand-aware buffer sizing + sat30 location screen) as planned, and (b) how to weigh the
+> project's center of gravity given H8: simple DS-seat rules capture ~49–51% of the thesis
+> RL's claimed loss-removal (audited), with the residual attributable to either a mechanism
+> outside the enumerated family or baseline non-comparability (branch iii — the Table 3.9
+> config request to the thesis author is now the single highest-value piece of missing
+> information). New item for review: promote the DS-seat compound
+> (shed × taper × standing) to a named policy in the paper, with the taper's
+> patient-cost caveat attached.
+
 Per protocol: items inside the already-approved scope could be executed freely; items
 introducing a NEW REGIME or NEW POLICY CLASS pause for user review. Everything below is the
 latter or is deliberately deferred — **nothing here was executed overnight.**

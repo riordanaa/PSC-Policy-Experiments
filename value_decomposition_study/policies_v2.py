@@ -183,7 +183,11 @@ class ShapedDS(AllocFlexibleDS):
                  buffer_b=0, buffer_window=None,
                  taper_thresh=None, taper_window=5, taper_m=1.0,
                  throttle_c=None,
-                 ss_freeze=False, freeze_thresh=0.5):
+                 ss_freeze=False, freeze_thresh=0.5,
+                 b_elev=0, recovery_dwell=0,
+                 prebook_f=None, smooth_cap=None,
+                 oo_gamma=None, oo_k=3.0,
+                 alloc_alpha=0.2):
         super().__init__(ds, rule)
         self.buffer_b = buffer_b
         self.buffer_window = buffer_window
@@ -193,6 +197,18 @@ class ShapedDS(AllocFlexibleDS):
         self.throttle_c = throttle_c
         self.ss_freeze = ss_freeze
         self.freeze_thresh = freeze_thresh
+        # DS-seat study knobs (all default off -> behavior bit-identical, gated)
+        self.b_elev = b_elev                  # state-elevated up-to while MN down + dwell
+        self.recovery_dwell = recovery_dwell  # periods of elevation after recovery
+        self.prebook_f = prebook_f            # anti-taper: order >= f x demand while down
+        self.smooth_cap = smooth_cap          # max |order - last order| per period
+        self.oo_gamma = oo_gamma              # stale-pipeline discount (age > oo_k x lead)
+        self.oo_k = oo_k
+        self.alloc_alpha = alloc_alpha        # smoothing for stateful allocation rules
+        self.mn_down = False
+        self._dwell_left = 0
+        self._mn_nominal = None
+        self._last_sent = None
         self._orders = deque(maxlen=max(taper_window, 5))
         self._receipts = deque(maxlen=max(taper_window, 5))
         self._frozen_up_to = None
@@ -203,15 +219,37 @@ class ShapedDS(AllocFlexibleDS):
         o = sum(self._orders)
         return (sum(self._receipts) / o) if o > 1 else 1.0
 
+    def _update_mn_state(self):
+        """Shared upstream signal: down while this DS's MN is below 50% of nominal lines.
+        Tracks the post-recovery dwell window for the elevated mode."""
+        if getattr(self, 'watch_mn', None) is None:
+            return
+        nominal = self._mn_nominal or self.watch_mn.num_active_lines
+        self._mn_nominal = max(nominal, self.watch_mn.num_active_lines)
+        was_down = self.mn_down
+        self.mn_down = self.watch_mn.num_active_lines < 0.5 * self._mn_nominal
+        if was_down and not self.mn_down:
+            self._dwell_left = self.recovery_dwell
+        elif not self.mn_down and self._dwell_left > 0:
+            self._dwell_left -= 1
+
     def make_decision(self, now):
+        self._update_mn_state()
         receipts = sum(d['item'].amount
                        for d in self.ds.get_history_item(now)['delivery'])
         self._receipts.append(receipts)
 
         inventory = self.ds.inventory_level()
-        allocated = flexible_allocate(self.ds, self.rule, now)
+        allocated = flexible_allocate(self.ds, self.rule, now, ctx=self)
         inventory -= allocated
-        on_order = sum(o.amount for o in self.ds.on_order)
+        if self.oo_gamma is not None:
+            on_order = 0.0
+            for o in self.ds.on_order:
+                lead = self.ds.lead_time_dict.get(o.dst, 2)
+                stale = (now - o.place_time) > self.oo_k * lead
+                on_order += o.amount * (self.oo_gamma if stale else 1.0)
+        else:
+            on_order = sum(o.amount for o in self.ds.on_order)
         backlog = self.ds.backlog_level()
         backlog -= allocated
 
@@ -232,6 +270,8 @@ class ShapedDS(AllocFlexibleDS):
                          or self.buffer_window[0] <= now <= self.buffer_window[1])
             if in_window:
                 up_to += self.buffer_b
+        if self.b_elev and (self.mn_down or self._dwell_left > 0):
+            up_to += self.b_elev          # state-dependent (two-regime) base stock
 
         order_amount = max(up_to + backlog - on_order - inventory, 0)
         max_order = max(2.0 * self.ds.predicted_demand, 120)
@@ -246,17 +286,24 @@ class ShapedDS(AllocFlexibleDS):
         if self.throttle_c is not None and self._was_shortfall and backlog <= 0:
             self._was_shortfall = False   # caught up; throttle disengages
 
-        # A1: order-taper-toward-failed-source — a DISCRETE pre-registered rule triggered
-        # by the shared upstream signal (this DS's MN below 50% of nominal lines): while
-        # down, cap orders at the observed recent delivery rate x mn_taper_m. Detection
-        # never feeds a continuous optimizer; it gates this one rule.
-        if getattr(self, 'watch_mn', None) is not None \
-                and getattr(self, 'mn_taper_m', None) is not None:
-            nominal = getattr(self, '_mn_nominal', None) or self.watch_mn.num_active_lines
-            self._mn_nominal = max(nominal, self.watch_mn.num_active_lines)
-            if self.watch_mn.num_active_lines < 0.5 * self._mn_nominal:
-                recent_rate = sum(self._receipts) / max(1, len(self._receipts))
-                order_amount = min(order_amount, recent_rate * self.mn_taper_m)
+        # Order-taper-toward-failed-source — a DISCRETE pre-registered rule triggered by
+        # the shared upstream signal: while down, cap orders at the observed recent
+        # delivery rate x mn_taper_m. Detection never feeds a continuous optimizer.
+        if getattr(self, 'mn_taper_m', None) is not None and self.mn_down:
+            recent_rate = sum(self._receipts) / max(1, len(self._receipts))
+            order_amount = min(order_amount, recent_rate * self.mn_taper_m)
+        # Prebook (anti-taper): while down, keep ordering at >= f x predicted demand to
+        # pre-book recovery production (queued orders fill first when capacity returns)
+        if self.prebook_f is not None and self.mn_down:
+            order_amount = max(order_amount,
+                               min(self.prebook_f * self.ds.predicted_demand, max_order))
+        # Order smoothing (bullwhip damping): cap per-period change
+        if self.smooth_cap is not None and self._last_sent is not None:
+            lo = self._last_sent - self.smooth_cap
+            hi = self._last_sent + self.smooth_cap
+            order_amount = min(max(order_amount, lo), hi)
+            order_amount = max(0, min(order_amount, max_order))
+        self._last_sent = order_amount
 
         self.last_order_amount = order_amount
         self._orders.append(order_amount)

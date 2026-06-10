@@ -33,3 +33,11 @@ number (after −468k/−654k) revealed as conditional on the hobbled routing la
 **Verdict: DON'T-TRY standing buffers (or buffer-anchored compositions) in the slack
 regime.** TRY again only under genuine supply scarcity (Phase 2), where stock is the only
 source of product and the frontier can be non-degenerate.
+
+**LOCATION QUALIFICATION (A3 verification, 2026-06-11):** the negative result above is
+specific to buffers AT or SPLIT-WITH the disrupted chain (the locations this card tested).
+Healthy-located standing buffers were later measured POSITIVE even in slack: B∈{120,240,480}
+gives +38k to +75k coverage at 6–25k premium (tuning; B480 confirmed on reporting seeds).
+Corrected statement: "in slack, buffers at the disrupted chain are zero-to-negative;
+at the surviving chain they buy modest coverage (~4–7%). Location is first-order in BOTH
+regimes."

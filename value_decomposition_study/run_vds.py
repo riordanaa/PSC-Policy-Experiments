@@ -40,12 +40,20 @@ DIS = (110, 157)
 ARGS = argparse.Namespace(delta=DELTA, sharp_p=4.0, writeoff_k=5.0, onset_share=0.1)
 
 
+RUNG_A_HC = [dict(split_recipe='bytrust'), dict(split_recipe='equally')]
+
+
 def hc_factory_for(policy, a):
+    if policy.startswith('dsseat'):
+        # the THESIS world: HC layer exactly as shipped (HC1 bytrust, HC2 equally,
+        # delta hard-coded 0.1, no sharpening, no write-off)
+        return lambda hc, i: FlexibleHCDecisionMaker(hc, **RUNG_A_HC[i])
     if policy.startswith('sat_full_oracle'):
         base = dict(RUNG_C_HC)
         base.update(onset_window=DIS, onset_disrupted_ds=None, onset_disrupted_share=0.1)
         return lambda hc, i: FlexibleHCDecisionMaker(hc, **base)
-    if policy.startswith('sat_full') or policy.startswith('h5_compound'):
+    if policy.startswith('a1_superset') or policy.startswith('sat_full') \
+            or policy.startswith('h5_compound'):
         return lambda hc, i: UpstreamSignalRerouteHC(
             hc, threshold_frac=0.5, down_share=0.1, **RUNG_C_HC)
     if policy.startswith('h4b_ceiling'):
@@ -77,6 +85,36 @@ def hc_factory_for(policy, a):
 
 def ds_factory_for(policy, a):
     rule = a.alloc_rule
+    if policy.startswith('dsseat'):
+        def f(ds):
+            dm = ShapedDS(
+                ds, rule=rule,
+                buffer_b=a.buffer_b,
+                b_elev=a.b_elev, recovery_dwell=a.recovery_dwell,
+                taper_thresh=None,
+                prebook_f=(a.prebook_f if a.prebook_f > 0 else None),
+                smooth_cap=(a.smooth_cap if a.smooth_cap > 0 else None),
+                oo_gamma=(a.oo_gamma if a.oo_gamma >= 0 else None),
+                throttle_c=(a.throttle_c if a.throttle_c > 0 else None),
+                alloc_alpha=a.alloc_alpha)
+            if a.mn_taper > 0:
+                dm.mn_taper_m = a.mn_taper
+            dm.needs_mn_watch = True   # all dsseat knobs read the upstream signal
+            return dm
+        return f
+    if policy.startswith('a1_superset'):
+        # A1 verification: TRUE superset oracle = full deployable stack (reroute+taper+prio)
+        # + JIT buffer at the HEALTHY DS (the location lesson from sat50, never tried in slack)
+        counter = {'i': 0}
+
+        def f(ds):
+            i = counter['i']; counter['i'] += 1
+            b = a.buffer_b if i == 1 else 0
+            dm = ShapedDS(ds, rule=rule, buffer_b=b,
+                          buffer_window=(DIS[0] - a.jit_lead, DIS[1]))
+            dm.mn_taper_m = a.taper_m
+            return dm
+        return f
     if policy.startswith('sat_full'):
         counter = {'i': 0}
 
@@ -175,8 +213,9 @@ def set_regime(regime, duration=48):
 
 
 def post_build_for(policy):
-    needs_hc = policy.startswith(('h3b_upstream', 'h5_compound', 'sat_full'))
-    needs_ds = policy.startswith(('h5_compound', 'h4b_ceiling', 'sat_full'))
+    needs_hc = policy.startswith(('h3b_upstream', 'h5_compound', 'sat_full', 'a1_superset'))
+    needs_ds = policy.startswith(('h5_compound', 'h4b_ceiling', 'sat_full', 'a1_superset',
+                                  'dsseat'))
     if not (needs_hc or needs_ds):
         return None
 
@@ -193,20 +232,23 @@ def post_build_for(policy):
                                           if u in ds_to_mn}
         if needs_ds:
             for ds_dm in ds_dms:
-                if getattr(ds_dm, 'mn_taper_m', None) is not None:
+                if getattr(ds_dm, 'mn_taper_m', None) is not None \
+                        or getattr(ds_dm, 'needs_mn_watch', False):
                     ds_dm.watch_mn = ds_to_mn.get(ds_dm.ds.name())
     return wire
 
 
 def run_policy(policy, demand_config, seeds, a, regime='slack', duration=48):
     original = set_regime(regime, duration)
+    # dsseat policies live in the THESIS world: as-shipped delta (agent.py hard-codes 0.1)
+    delta = None if policy.startswith('dsseat') else DELTA
     try:
         frames = []
         for seed in seeds:
             df = run_ladder.run_one('c', demand_config, seed, ARGS,
                                     ds_factory=ds_factory_for(policy, a),
                                     hc_factory=hc_factory_for(policy, a),
-                                    delta_override=DELTA,
+                                    delta_override=delta,
                                     post_build=post_build_for(policy))
             df['rung'] = policy
             frames.append(df)
@@ -231,9 +273,17 @@ def main():
     ap.add_argument('--jit-lead', type=int, default=10)
     ap.add_argument('--taper-thresh', type=float, default=0.5)
     ap.add_argument('--taper-m', type=float, default=1.0)
-    ap.add_argument('--throttle-c', type=float, default=1.2)
+    ap.add_argument('--throttle-c', type=float, default=0)   # 0 = off; was 1.2, which
+    # silently activated the throttle in every dsseat run (caught 2026-06-11)
     ap.add_argument('--ss-freeze', type=int, default=0)
     ap.add_argument('--gamma', type=float, default=0.5)
+    ap.add_argument('--mn-taper', type=float, default=0)
+    ap.add_argument('--b-elev', type=float, default=0)
+    ap.add_argument('--recovery-dwell', type=int, default=0)
+    ap.add_argument('--prebook-f', type=float, default=0)
+    ap.add_argument('--smooth-cap', type=float, default=0)
+    ap.add_argument('--oo-gamma', type=float, default=-1)
+    ap.add_argument('--alloc-alpha', type=float, default=0.2)
     ap.add_argument('--theta-down', type=float, default=0.5)
     ap.add_argument('--w-down', type=int, default=3)
     ap.add_argument('--theta-up', type=float, default=0.6)
