@@ -75,7 +75,7 @@ def apply_demand_config(name):
         setattr(config, k, v)
 
 
-def build_sim(hc_params, delta_override=None):
+def build_sim(hc_params, delta_override=None, ds_factory=None):
     profile = ConfigDrivenProfile()
     dm = dmaker.PerAgentDecisionMaker()
     hc_dms = []
@@ -94,7 +94,7 @@ def build_sim(hc_params, delta_override=None):
         dm.add_decision_maker(dmaker.SimpleMNDecisionMaker(mn))
     ds_dms = []
     for ds in profile.distributors:
-        ds_dm = LoggingSimpleDS(ds)
+        ds_dm = ds_factory(ds) if ds_factory is not None else LoggingSimpleDS(ds)
         dm.add_decision_maker(ds_dm)
         ds_dms.append(ds_dm)
     runner = sim_runner.SimulationRunner(
@@ -116,13 +116,14 @@ def hist(agent, period, key, default=None):
     return item.get(key, default)
 
 
-def run_one(rung, demand_config, seed, args):
+def run_one(rung, demand_config, seed, args, ds_factory=None):
     """Run one (rung, config, seed) episode; return a per-period DataFrame."""
     apply_demand_config(demand_config)
     config.set_global_seeds(seed)
     sim, runner, hc_dms, ds_dms = build_sim(
         rung_params(rung, args),
-        delta_override=(args.delta if rung == 'c' else None))
+        delta_override=(args.delta if rung == 'c' else None),
+        ds_factory=ds_factory)
     # CRITICAL: NormalDistPatientModel.__init__ hard-resets the global RNG with
     # np.random.seed(0) (simulator/patient_model.py:28), defeating set_global_seeds and
     # making every "seed" produce the identical demand path. Re-seed AFTER construction
