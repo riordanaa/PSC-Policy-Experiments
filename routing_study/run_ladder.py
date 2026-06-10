@@ -75,7 +75,7 @@ def apply_demand_config(name):
         setattr(config, k, v)
 
 
-def build_sim(hc_params, delta_override=None, ds_factory=None):
+def build_sim(hc_params, delta_override=None, ds_factory=None, hc_factory=None):
     profile = ConfigDrivenProfile()
     dm = dmaker.PerAgentDecisionMaker()
     hc_dms = []
@@ -83,8 +83,12 @@ def build_sim(hc_params, delta_override=None, ds_factory=None):
     # resolve the disrupted DS name dynamically instead of hardcoding it
     disrupted_ds_name = profile.distributors[0].name()
     for i, hc in enumerate(profile.health_centers):
-        hc_dm = FlexibleHCDecisionMaker(hc, **hc_params[i])
-        if hc_dm.onset_window is not None and hc_dm.onset_disrupted_ds is None:
+        if hc_factory is not None:
+            hc_dm = hc_factory(hc, i)
+        else:
+            hc_dm = FlexibleHCDecisionMaker(hc, **hc_params[i])
+        if getattr(hc_dm, 'onset_window', None) is not None \
+                and getattr(hc_dm, 'onset_disrupted_ds', None) is None:
             hc_dm.onset_disrupted_ds = disrupted_ds_name
         dm.add_decision_maker(hc_dm)
         hc_dms.append(hc_dm)
@@ -116,14 +120,22 @@ def hist(agent, period, key, default=None):
     return item.get(key, default)
 
 
-def run_one(rung, demand_config, seed, args, ds_factory=None):
-    """Run one (rung, config, seed) episode; return a per-period DataFrame."""
+def run_one(rung, demand_config, seed, args, ds_factory=None, hc_factory=None,
+            delta_override='auto', post_build=None):
+    """Run one (rung, config, seed) episode; return a per-period DataFrame.
+    post_build(sim, hc_dms, ds_dms) runs after construction, before the first cycle —
+    used to wire decision makers to observable shared state (e.g. info-sharing signals)."""
     apply_demand_config(demand_config)
     config.set_global_seeds(seed)
+    if delta_override == 'auto':
+        delta_override = args.delta if rung == 'c' else None
     sim, runner, hc_dms, ds_dms = build_sim(
         rung_params(rung, args),
-        delta_override=(args.delta if rung == 'c' else None),
-        ds_factory=ds_factory)
+        delta_override=delta_override,
+        ds_factory=ds_factory,
+        hc_factory=hc_factory)
+    if post_build is not None:
+        post_build(sim, hc_dms, ds_dms)
     # CRITICAL: NormalDistPatientModel.__init__ hard-resets the global RNG with
     # np.random.seed(0) (simulator/patient_model.py:28), defeating set_global_seeds and
     # making every "seed" produce the identical demand path. Re-seed AFTER construction
