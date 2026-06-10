@@ -51,6 +51,18 @@ room above it ≈1% (H4).
   - Detection reroute: down_share 0.1 frozen (H3b); upstream threshold 0.5 frozen.
   - Primary Phase-2 cell for the full frontier: (sat50, 48). Other cells: ladder +
     buffer sweep only (the flip map).
+  - Computed per-cell shortfalls S = max(0, 240 − 20 − 400×factor) × duration and the
+    resulting FROZEN buffer grids ({0.25,0.5,1.0,1.5}×S, rounded to 10):
+
+    | Cell | deficit/period | S | B grid |
+    |---|---:|---:|---|
+    | sat70, any d | 0 (supply 300 ≥ 240) | 0 | none — ladder only (slack-side anchor) |
+    | sat50, d5 | 20 | 100 | {30, 50, 100, 150} |
+    | sat50, d17 | 20 | 340 | {90, 170, 340, 510} |
+    | sat50, d48 (PRIMARY) | 20 | 960 | {240, 480, 960, 1440} |
+    | sat30, d5 | 100 | 500 | {130, 250, 500, 750} |
+    | sat30, d17 | 100 | 1700 | {430, 850, 1700, 2550} |
+    | sat30, d48 | 100 | 4800 | {1200, 2400, 4800, 7200} |
 
 ## Execution protocol (user, 2026-06-10)
 

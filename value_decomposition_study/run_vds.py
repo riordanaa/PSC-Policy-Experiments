@@ -41,7 +41,11 @@ ARGS = argparse.Namespace(delta=DELTA, sharp_p=4.0, writeoff_k=5.0, onset_share=
 
 
 def hc_factory_for(policy, a):
-    if policy.startswith('h5_compound'):
+    if policy.startswith('sat_full_oracle'):
+        base = dict(RUNG_C_HC)
+        base.update(onset_window=DIS, onset_disrupted_ds=None, onset_disrupted_share=0.1)
+        return lambda hc, i: FlexibleHCDecisionMaker(hc, **base)
+    if policy.startswith('sat_full') or policy.startswith('h5_compound'):
         return lambda hc, i: UpstreamSignalRerouteHC(
             hc, threshold_frac=0.5, down_share=0.1, **RUNG_C_HC)
     if policy.startswith('h4b_ceiling'):
@@ -73,6 +77,16 @@ def hc_factory_for(policy, a):
 
 def ds_factory_for(policy, a):
     rule = a.alloc_rule
+    if policy.startswith('sat_full'):
+        counter = {'i': 0}
+
+        def f(ds):
+            i = counter['i']; counter['i'] += 1
+            b = a.buffer_b if i == 1 else 0     # standing buffer at DS_healthy only
+            dm = ShapedDS(ds, rule=rule, buffer_b=b)
+            dm.mn_taper_m = a.taper_m
+            return dm
+        return f
     if policy.startswith('h5_compound'):
         def f(ds):
             dm = ShapedDS(ds, rule=rule)
@@ -161,8 +175,8 @@ def set_regime(regime, duration=48):
 
 
 def post_build_for(policy):
-    needs_hc = policy.startswith(('h3b_upstream', 'h5_compound'))
-    needs_ds = policy.startswith(('h5_compound', 'h4b_ceiling'))
+    needs_hc = policy.startswith(('h3b_upstream', 'h5_compound', 'sat_full'))
+    needs_ds = policy.startswith(('h5_compound', 'h4b_ceiling', 'sat_full'))
     if not (needs_hc or needs_ds):
         return None
 
