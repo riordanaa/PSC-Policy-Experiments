@@ -1,6 +1,20 @@
 # PSC Policy Experiments
 
-Experimental snapshot of a Deep Reinforcement Learning (DRL) framework for ordering and allocation decisions in a multi-echelon pharmaceutical supply chain (PSC) under disruptions, plus a reward-shaping audit and a set of diagnostic experiments built on top of it.
+Experimental snapshot of a Deep Reinforcement Learning (DRL) framework for ordering and allocation decisions in a multi-echelon pharmaceutical supply chain (PSC) under disruptions, plus a reward-shaping audit and a series of deterministic policy studies built on top of it.
+
+> **Start here: [`consolidated_report/consolidated_findings.pdf`](consolidated_report/)** — the single source of current truth across all studies (claims table with status codes, the four key findings, superseded-claims list, audit record). Several numbers in the individual study folders below are formally superseded there; do not cite a study-folder number without checking the consolidated claims table.
+
+## Study index (newest first; each folder has its own report/cards)
+
+| Folder | Question | Headline (audited) |
+|---|---|---|
+| `consolidated_report/` | single source of truth | claims table + 4 findings + do-not-cite list |
+| `value_decomposition_study/` | complete & stress-test the value decomposition; test the simple-rules-vs-RL hypothesis from the distributor's seat | info-sharing reroute ≡ perfect-onset oracle (bit-exact); simple distributor compound removes 49–51% of base stock's loss (thesis RL claimed 89%, unreplicated); lever-flip map (no action → routing → compound → buffer-only), robust to recurring disruptions; hypothesis cards H1–H10 in `hypotheses/` |
+| `understanding_study/` | with routing repaired, what's left? | allocation channel ≤12%; residual is mostly dead-factory bookkeeping; dynamics anatomy |
+| `routing_study/` | is the disruption pile-up physics or a routing artifact? | 67–91% of disruption cost removable by HC routing rules alone |
+| `reward_report_pdf/`, `reward_fix_report/` | does the thesis's shaped reward shape? does fixing it fix the agent? | reward components defective/saturated; repaired pipeline trains stably but loses to base stock on system profit |
+
+All studies: gated harness (bit-exact baseline reproduction, determinism, conservation), pre-registered tuning/reporting seed splits (1–10 / 11–30), dual cost accounting, and per-phase independent audits re-deriving headline numbers from raw CSVs.
 
 ## What this repository adds on top of the original codebase
 

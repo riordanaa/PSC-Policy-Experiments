@@ -9,6 +9,7 @@
 \usepackage{caption}
 \usepackage{xcolor}
 \usepackage{microtype}
+\usepackage{needspace} % keep claims-table headings attached to their tables
 \usepackage[hidelinks]{hyperref}
 \captionsetup{font=small,labelfont=bf}
 \setlength{\parskip}{4pt}
@@ -39,276 +40,103 @@ distributor-seat test, Part C). Individual reports remain archived as the audit 
 \begin{document}
 \maketitle
 
-\section*{How to read this document}
+\section*{Setting and scope}
 
-\textbf{The setting.} Everything in this document comes from a simulated pharmaceutical
-supply chain inherited from a predecessor thesis: two manufacturers ship to two
-distributors, which ship to two health centers serving patient demand (a
-2$\times$2$\times$2 network). In the central experiment, one manufacturer loses 95\% of
-its production capacity for 48 of the episode's 300 periods. The thesis trained a deep
-reinforcement-learning (RL) agent to control the distributors and reported that it far
-outperforms a standard base-stock (order-up-to-a-target) policy under this disruption.
-Our research question: \emph{can simple, transparent decision rules match the thesis's
-RL agent and beat the base-stock baseline --- and if not, where does the remaining value
-for learning actually live?}
+Simulated pharmaceutical supply chain from the predecessor thesis. The question:
+\emph{can simple, transparent rules match the thesis's RL agent and beat base stock ---
+and if not, where does the remaining value for learning live?} This document consolidates
+all three experiment campaigns, claims-first; superseded numbers are listed in
+Section~\ref{sec:superseded} and should not be cited.
 
-\textbf{What this document is.} The single source of current truth consolidating three
-experiment campaigns (the routing study, the routing-repaired ``understanding'' study,
-and the value-decomposition study). It is ordered most-load-bearing first:
-Section~\ref{sec:claims} lists every claim with its evidence and status;
-Section~\ref{sec:findings} gives the four findings that matter;
-Section~\ref{sec:detail} carries the phase-by-phase detail;
-Section~\ref{sec:superseded} lists superseded claims (do not cite); the closing sections
-record the verification regime and next steps. The full individual reports remain
-archived as the audit trail.
-
-\medskip
-{\footnotesize
-\begin{xltabular}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.4cm}X@{}}
+\begin{table}[h]
+\centering\small
+\caption{Experimental setup (the thesis configuration; everything else varies by study
+and is stated where used).}
+\begin{tabular}{l p{11.6cm}}
 \toprule
-\textbf{Term used below} & \textbf{Meaning} \\
+Network & 2 manufacturers $\to$ 2 distributors $\to$ 2 health centers; each HC
+dual-sourced \\
+Demand & non-urgent $\mathcal{N}(120, 5)$ per health center per period; urgent 0 or 20 \\
+Costs & holding 1/unit, backlog 10/unit, revenue 10/unit \\
+Disruption & one manufacturer at \textbf{5\% capacity for 48 of 300 periods}
+(periods 110--157) \\
+Capacity & 400 units/period per manufacturer; normal load $\approx$120, so the survivor
+has $3.3\times$ headroom \\
+Baseline & base stock (order-up-to-target) at every echelon \\
+Control seat & the RL agent (and our rules) control the distributors: one order
+quantity $+$ the allocation split across health centers \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+{\footnotesize
+\begin{xltabular}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.2cm}X@{}}
+\toprule
+\textbf{Term} & \textbf{Meaning} \\
 \midrule
 \endhead
-\midrule \multicolumn{2}{r@{}}{\footnotesize\emph{continued on next page}}\\
-\endfoot
 \bottomrule
 \endlastfoot
-thesis world (``as-shipped'' routing) &
-The simulator exactly as the thesis configured it. In particular, one health center
-splits its orders between the two distributors by an internal trust score; the other is
-hard-wired to split 50/50 (the ``captive'' customer --- it cannot shift orders away from
-a failed supplier). \\
-routing-repaired world &
-The same simulator with our repair to the health centers' routing layer, so orders can
-follow surviving supply. Used to study what remains once the routing artifact is
-removed. \\
-trust &
-The simulator's built-in supplier rating: a health center routes a larger share of its
-orders to suppliers that have delivered reliably in the recent past. \\
-disruption cost &
-System-wide holding-plus-backlog cost accumulated from the disruption's onset to the
-end of the episode. \\
-thesis severity (slack regime) &
-The disruption as the thesis configured it: one manufacturer at 5\% capacity for 48
-periods, the \emph{surviving} manufacturer unconstrained --- it has spare capacity and
-could serve all demand if orders were rerouted to it. \\
-moderate / severe scarcity &
-Harder regimes in which the surviving plant is \emph{also} cut, to 50\% (moderate) or
-30\% (severe) of capacity, so total supply is below total demand and no routing rule can
-serve everyone. \\
-urgent0 / urgent20 &
-The two demand configurations: all patient demand deferrable (unmet demand is
-backlogged) vs.\ 20 urgent patients per health center per period whose demand is
-permanently lost if unmet that period. \\
-premium / coverage &
-Insurance framing for standing buffers: the \emph{premium} is the extra normal-times
-cost a policy pays; the \emph{coverage} is the disruption damage it removes. \\
-reporting seeds &
-20 held-out random demand scenarios (seeds 11--30) never used for tuning; every
-headline number is measured on these. \\
-the compound &
-Shorthand for the named combination policy of the section at hand (components defined
-where used). The distributor-seat compound, e.g., is serve-the-captive routing
-$\times$ stop ordering from the dead factory $\times$ a standing buffer. \\
-oracle &
-A non-deployable reference policy given perfect advance knowledge of the disruption
-onset; used as an upper bound, not a proposal. \\
-base stock &
-The standard order-up-to-a-target inventory policy; the thesis's (and our) baseline. \\
-MN / DS / HC &
-Manufacturer / distributor (the seat the RL agent controls) / health center. \\
+thesis world / routing-repaired & The simulator as the thesis shipped it (one health
+center hard-wired to a 50/50 supplier split --- the ``captive'' customer) vs.\ with our
+repaired health-center routing layer. \\
+disruption cost & System-wide holding $+$ backlog cost from onset to episode end. \\
+moderate / severe scarcity & The surviving plant is \emph{also} cut, to 50\% / 30\%, so
+total supply $<$ total demand (the thesis scenario leaves it unconstrained --- ``slack''). \\
+urgent0 / urgent20 & Demand configs: all demand deferrable vs.\ 20 urgent patients per
+health center per period, lost if unmet. \\
+premium / coverage & Extra normal-times cost a policy pays vs.\ disruption damage it
+removes. \\
+reporting seeds & 20 held-out demand scenarios (11--30), never used for tuning; all
+headline numbers. \\
+the compound & The named combination policy of the section at hand, e.g.\ the
+distributor compound: serve-the-captive $\times$ stop ordering from the dead factory
+$\times$ standing buffer. \\
 \end{xltabular}%
 }
 
-\section{Current state of claims}\label{sec:claims}
+\section{Scorecard: the claims at a glance}\label{sec:claims}
 
-Every load-bearing claim, written as a self-contained sentence, grouped into four themes.
-All values come from audited runs on held-out reporting seeds unless marked otherwise.
-\emph{Status} codes: \textbf{established} (audited and standing), \textbf{corrected}
-(replaces an earlier number or reading --- the superseded version is listed in
-Section~\ref{sec:superseded}), \textbf{open} (cannot yet be verified),
-\textbf{retracted} (withdrawn; do not cite).
+One line per load-bearing claim; all numbers audited on held-out seeds. Full-sentence
+versions and per-claim evidence live in the hypothesis cards and archived reports;
+superseded numbers are in Section~\ref{sec:superseded}.
 
-\subsection{The disruption and the routing layer}
-
-\begin{claimstable}
-The cost pile-up that follows the manufacturer outage is mostly an artifact of the
-simulator's routing layer (the captive health center's hard-wired equal split, and the
-fact that orders stranded in a dead supplier's queue are never re-issued), not
-unavoidable supply physics: simple health-center routing rules alone remove most of the
-disruption cost at thesis severity. &
-67--91\% of the disruption cost is removable by HC routing rules alone (thesis
-severity). &
-established \\
-\addlinespace
-Downstream detection of the outage is structurally blind for about six periods: the
-failed distributor keeps shipping from its own stock, and that stock cover masks the
-failure from every downstream observer. An explicit delivery-rate detector performs
-\emph{worse} than the simulator's built-in trust mechanism. &
-$\sim$6-period blind window; $\sim$0.9M of cost accrues behind the stock-cover mask;
-explicit detector $<$ built-in trust. &
-established \\
-\addlinespace
-The earlier claim that ``detection captures approximately zero'' was too broad and has
-been narrowed: detection followed by \emph{buffering} is indeed worth approximately
-zero, but detection followed by \emph{rerouting} carries the value of knowing the
-onset. &
-detect-then-buffer $\approx 0$; detect-then-reroute carries the onset value. &
-corrected \\
-\end{claimstable}
-
-\subsection{Information and foresight}
-
-\begin{claimstable}
-Sharing the upstream machine-state signal is worth exactly as much as perfect knowledge
-of the disruption onset: a two-line reroute triggered by the shared signal reproduces
-the perfect-onset oracle's trajectory bit-for-bit. &
-Bit-identical trajectories (audited); disruption cost 1.06M $\to$ 295k; lost patients
-445 $\to$ 203. &
-established \\
-\addlinespace
-True foresight --- acting \emph{before} the onset --- adds a small but real margin on
-top of the shared signal, provided the preparatory buffer is placed at the correct
-location (the surviving chain). This corrects our earlier claim that foresight adds
-nothing beyond the shared signal, which was an artifact of a mis-located buffer. &
-$\approx$54k ($\sim$5\%) of additional value with a correctly located buffer. &
-corrected \\
-\addlinespace
-In the slack regime, the remaining room for \emph{any} policy --- learned or not ---
-above the best deployable compound is approximately zero \emph{within the enumerated
-rule family}. This is a family-bounded statement, not an absolute one, though no
-candidate mechanism outside the family has been identified. &
-Room above best deployable $\approx 0$ (family bound; moderate-high confidence). &
-established \\
-\end{claimstable}
-
-\subsection{The distributor's levers (the RL question)}
-
-\begin{claimstable}
-The best simple distributor compound --- serve-the-captive routing $\times$
-stop-ordering-from-the-dead-factory $\times$ a standing buffer --- removes about half
-of base stock's profit loss in the thesis's own world, on the thesis's own metric, in
-both demand configurations (all demand deferrable, ``urgent0''; 20 urgent patients per
-health center per period, ``urgent20''). &
-49.1\% (urgent0) / 50.7\% (urgent20) of base stock's loss removed; fill 0.858 vs
-0.808; lost patients 1,575 vs 1,768. &
-established \\
-\addlinespace
-The thesis RL result (Table 3.9) claims to remove 89\% of base stock's loss, but it is
-UNREPLICATED and the baseline configuration is unknown; we treat it as a claim, not a
-reproduced result, pending the author's configuration. &
-Claimed 89\% vs our measured 49--51\% for simple rules; baseline config unknown. &
-open \\
-\addlinespace
-Demand-shaping from the distributor's seat is real: deliberately shedding one health
-center's demand improves the system on episode totals, and the \emph{direction} of the
-shed matters (shedding the wrong customer destroys value). This supersedes the earlier
-reading that allocation is worth $\le$12\% everywhere, which was specific to the
-routing-repaired world. &
-shed $+21.8\%$ (both HCs better off on totals); direction control: shed\_inverse
-$-14.3\%$. &
-established \\
-\addlinespace
-Tapering orders toward the failed source looks valuable on the thesis metric, but the
-gain is accounting-driven (dead-factory queue bookkeeping), and the lever is harmful to
-patients when used alone. &
-$+24.9\%$ on the thesis metric; $+9\%$ lost patients when used alone. &
-established \\
-\addlinespace
-A state-elevated base-stock policy is dead on arrival in this simulator: supply physics
-prevent inventory from climbing during the outage, so raising the target does nothing. &
-Inventory cannot climb during the outage (4 units measured). &
-established \\
-\addlinespace
-In the routing-repaired worlds, the distributor's allocation channel is bounded at
-$\le$12\% (static priority, costed for fairness at $\pm$0.023 fill); every dynamic
-``smart'' allocation rule backfires through the trust loop, and static priority itself
-flips harmful under scarcity. &
-$\le$12\% bound; dynamic rules backfire $+25$--$56\%$; priority $+23\%$ harmful under
-scarcity. &
-established \\
-\addlinespace
-Our repaired DRL pipeline (six reward components fixed, exploration schedule
-linearized) trains stably but \emph{loses} to base stock on system profit; there is
-currently no working RL comparator in this codebase. &
-System profit $-4.06$M (DRL) vs $-2.35$M (base stock). &
-established \\
-\end{claimstable}
-
-\subsection{Scarcity: buffers and the frontier}
-
-\begin{claimstable}
-Under moderate scarcity (the surviving plant also cut to 50\%, 48-period outage), the
-frontier is owned by one composition: the compound of buffer-at-survivor, reroute, and
-taper removes most of the cost at near-perfect fill, and dominates buffer-only at the
-same buffer premium. &
-$-79\%$ of cost at fill 0.99--1.00; dominates buffer-only 2.4$\times$ at matched
-premium. &
-established \\
-\addlinespace
-The buffer's optimal \emph{location} flips to the disrupted chain when scarcity is
-severe enough that the surviving chain cannot carry the load. The lever-flip map orders
-the winning lever across the severity $\times$ duration plane: no-action (duration
-$\le$ stock cover) $\to$ routing $\to$ compound $\to$ buffer-only. &
-Severe-scarcity cell corrected: disrupted-located buffer wins at 2,417k, $-30\%$ vs
-the healthy-chain location. &
-corrected (severe-scarcity cell) \\
-\addlinespace
-Demand-aware buffer \emph{sizing} --- set $B = (\text{demand} - \text{surviving
-deliverable}) \times \text{per-event duration}$ --- replaces the frozen per-severity
-grids and dramatically cuts lost patients. The per-event qualifier comes from the
-recurrence check: buffers refill between events, so sizing to the cumulative duration
-over-buys. &
-Lost patients 505 $\to$ 41 at the frozen optimum; under two events, per-event sizing
-beats total-duration sizing (1,033k vs 1,210k). &
-established (refined) \\
-\addlinespace
-Severity-aware redirect caps are REFUTED in both tested forms: capping redirected
-orders starves the surviving supplier of the order signal that drives its production,
-so the cap hurts exactly when it is meant to help. &
-Both forms refuted; mechanism: orders are the supplier's production signal. &
-established (negative result) \\
-\addlinespace
-Buffers in the slack regime are location-specific: a buffer at the disrupted chain is
-worth zero-to-negative, while a buffer at the surviving chain adds a few percent. This
-corrects both the blanket ``slack buffers are negative'' claim and the broken-routing
-``insurance captures 42\%'' artifact. &
-Disrupted chain: zero-to-negative; surviving chain: $+4$--$7\%$. &
-corrected \\
-\end{claimstable}
-
-\subsection{Pre-publication robustness checks (all passed)}
-
-\begin{claimstable}
-The lever-flip map is robust to recurring disruptions: with two identical events per
-episode, no cell changes its winning lever, and the compound's advantage \emph{grows}
-under recurrence --- its signal-gated components cost nothing between events and its
-buffer refills, so its cost grows only $\sim$1.35--1.4$\times$ for two events. The
-no-action zone survives recurring short blips, and aggressive rerouting remains the
-worst policy at severe scarcity. &
-Compound, two events: 378k (mild) / 1,033k (moderate); no-action 142,639 still beats
-routing 203,544 for recurring blips; routing 10.1M still worst at severe scarcity. &
-established \\
-\addlinespace
-Coverage does not collapse in normal times: in episodes with NO disruption, the
-signal-gated rules are inert (within 0.5\% of base stock's profit), so the
-information-sharing compound pays essentially zero premium --- in sharp contrast to the
-thesis RL, which lost 18\% in its own no-disruption scenario. Standing buffers, by
-contrast, pay their full holding premium when nothing happens. &
-No-disruption profit: base stock 794,889; gated compound 790,732 ($-0.5\%$); compound
-with standing buffer 527,072 ($-34\%$). &
-established \\
-\addlinespace
-Equity of the shed rule: on episode totals BOTH health centers are better off (fill and
-lost patients improve for both), but the transition has a real, localized cost --- the
-deliberately starved health center's worst 5-period service dips from 0.614 to
-$\approx$0.50 before the rerouting completes. Honest deployment framing: Pareto-improving
-on totals, with a measurably deeper short trough for the starved customer; pair with a
-service floor in practice. &
-Lost patients per HC (urgent20): trust-routed 804 $\to$ 713; captive 964 $\to$ 862;
-worst 5-period fill 0.614 $\to$ $\approx$0.50. &
-established \\
-\end{claimstable}
+\begin{table}[h]
+\centering\small
+\begin{tabular}{@{}p{9.4cm} p{4.3cm} l@{}}
+\toprule
+\textbf{Claim} & \textbf{Key numbers} & \textbf{Status} \\
+\midrule
+The disruption pile-up is mostly a routing artifact, not supply physics &
+67--91\% of cost removed by HC routing rules & established \\
+Sharing the upstream machine-state signal $=$ perfect onset knowledge: a two-line
+reroute matches the oracle exactly &
+cost 1.06M $\to$ 295k; lost 445 $\to$ 203 & established \\
+Downstream detection is blind for $\sim$6 periods (the failed distributor ships from
+its own stock) &
+$\sim$0.9M accrues behind the mask & established \\
+True foresight adds a small real margin (buffer must sit at the surviving chain) &
+$\approx$54k ($\sim$5\%) & corrected \\
+\textbf{Simple distributor rules recover about HALF of the RL's claimed advantage} &
+\textbf{49--51\% vs claimed 89\% (unreplicated)} & \textbf{open gap} \\
+Demand-shaping through allocation is real and direction-sensitive &
+shed $+$21.8\%; wrong direction $-$14.3\% & established \\
+Under scarcity, buffer LOCATION and demand-aware SIZING dominate; the compound owns
+the frontier &
+$-$79\% at fill $\approx$1.0; lost 505 $\to$ 41 & established \\
+Lever-flip map: no action $\to$ routing $\to$ compound $\to$ buffer-only; robust to
+recurring disruptions &
+severe cell: buffer at disrupted chain, $-$30\% & established \\
+Every adaptive ``smart'' rule tested backfired (detection, five allocation rules, two
+redirect caps) &
+$+$9\% to $+$56\% worse than simpler alternatives & established \\
+Gated rules cost nothing in normal times; standing buffers pay in full &
+no-disruption profit: $-$0.5\% vs $-$34\% & established \\
+Our repaired DRL trains stably but loses to base stock (no working RL comparator) &
+system profit $-$4.06M vs $-$2.35M & established \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{The four findings that matter}\label{sec:findings}
 

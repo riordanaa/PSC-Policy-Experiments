@@ -131,3 +131,13 @@
   cost — starved HC's worst 5-period fill 0.614→≈0.50 during transition.
 - Lever-flip map figure redesigned (categorical lever colors, plain-language axes).
   Consolidated report being restructured for advisor readability (design agents).
+
+## 2026-06-11 — STUDY CLOSED
+
+- Consolidated report finalized (9 pp: how-to-read block, glossary, 5 thematic claims
+  tables, robustness section) — `consolidated_report/consolidated_findings.pdf` is the
+  single source of truth; repo README now points to it with a study index.
+- All queued experimental work is complete and audited (12/12, 11/12+1 corrected, 16/16,
+  13/13, 18/18). Remaining items are in NEXT_PLAN.md: Table 3.9 config (user), paper
+  distillation (outline drafted), ramped-onset (held, paper 2), DRL evaluation (blocked on
+  corrected code). No open branches; no unflushed results.

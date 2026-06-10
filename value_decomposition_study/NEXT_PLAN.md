@@ -1,5 +1,22 @@
 # NEXT_PLAN — written after Phases 1+2 complete (2026-06-10)
 
+> **UPDATE 2026-06-11 (post H10 — current state of the queue):**
+> - DONE since the list below was written: severity-aware redirect (item 1 — REFUTED, H9);
+>   demand-aware buffer sizing (item 2 — KEPT, refined to per-event sizing under H10);
+>   sat30 location screen (item 6 — corrected the map cell); **recurring-disruption
+>   robustness (item 3 — PASSED, map publication-ready)**; coverage-collapse and shed-equity
+>   verifications (H10).
+> - REMAINING, in priority order:
+>   1. **USER ACTION: obtain the thesis Table 3.9 configuration from the author** — the
+>      only item that can change the interpretation of the 49%-vs-89% result.
+>   2. **Paper distillation** from `consolidated_report/` (skeleton drafted at
+>      `consolidated_report/paper_outline.md`).
+>   3. **Ramped-onset regime** — the second paper; awaits user approval (new regime).
+>   4. When corrected DRL code arrives: evaluate vs the regime-appropriate compounds
+>      (bars in the consolidated claims table), same seeds/gates/accounting.
+>   5. Deferred small items (urgent20 map columns, γ-discount under scarcity) — only if a
+>      reviewer asks.
+
 > **UPDATE 2026-06-11 (post Part A verification + Part B / H8):** the decision now in front
 > of the user is (a) whether to run Part C (severity-aware redirect across the map +
 > demand-aware buffer sizing + sat30 location screen) as planned, and (b) how to weigh the
