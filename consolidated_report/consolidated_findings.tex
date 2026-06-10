@@ -2,6 +2,7 @@
 \usepackage[margin=0.95in]{geometry}
 \usepackage{booktabs}
 \usepackage{tabularx}
+\usepackage{xltabular} % breakable tabularx (longtable-based): avoids half-empty pages
 \usepackage{array}
 \usepackage{graphicx}
 \usepackage{amsmath}
@@ -18,9 +19,14 @@
 \newcolumntype{E}{>{\raggedright\arraybackslash}p{4.7cm}}
 \newcolumntype{T}{>{\raggedright\arraybackslash}p{1.9cm}}
 \newenvironment{claimstable}
-  {\par\footnotesize\tabularx{\textwidth}{@{}C E T@{}}
-   \toprule \textbf{Claim (plain language)} & \textbf{Evidence (key numbers)} & \textbf{Status}\\ \midrule}
-  {\bottomrule\endtabularx\par\vspace{2pt}}
+  {\par\footnotesize\xltabular{\textwidth}{@{}C E T@{}}
+   \toprule \textbf{Claim (plain language)} & \textbf{Evidence (key numbers)} & \textbf{Status}\\ \midrule
+   \endhead
+   \midrule \multicolumn{3}{r@{}}{\footnotesize\emph{continued on next page}}\\
+   \endfoot
+   \bottomrule
+   \endlastfoot}
+  {\endxltabular\par\vspace{2pt}}
 
 \title{\textbf{Consolidated Findings: Simple Policies, Information, and the Room for RL\\
 in the Pharmaceutical Supply-Chain Simulator}\\
@@ -58,10 +64,15 @@ archived as the audit trail.
 
 \medskip
 {\footnotesize
-\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.4cm}X@{}}
+\begin{xltabular}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.4cm}X@{}}
 \toprule
 \textbf{Term used below} & \textbf{Meaning} \\
 \midrule
+\endhead
+\midrule \multicolumn{2}{r@{}}{\footnotesize\emph{continued on next page}}\\
+\endfoot
+\bottomrule
+\endlastfoot
 thesis world (``as-shipped'' routing) &
 The simulator exactly as the thesis configured it. In particular, one health center
 splits its orders between the two distributors by an internal trust score; the other is
@@ -106,8 +117,7 @@ base stock &
 The standard order-up-to-a-target inventory policy; the thesis's (and our) baseline. \\
 MN / DS / HC &
 Manufacturer / distributor (the seat the RL agent controls) / health center. \\
-\bottomrule
-\end{tabularx}%
+\end{xltabular}%
 }
 
 \section{Current state of claims}\label{sec:claims}
