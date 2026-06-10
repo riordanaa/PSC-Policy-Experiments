@@ -115,3 +115,19 @@
 - Consolidated report rewritten (corrections + bounded phrasing + H8 + Part C) and compiled
   (`value_decomposition_report_v2.pdf` — original filename locked by a viewer). Figures
   regenerated incl. new DS-seat shares bar + corrected map. Part-C audit agent running.
+
+## 2026-06-11 — Pre-publication robustness (H10) COMPLETE; audit 18/18
+
+- **Recurrence: THE MAP HOLDS.** Two-event versions of four cells: no winner changes; the
+  compound amortizes best (×1.35–1.39 cost growth for 2 events — gated rules premium-free,
+  buffer refills between events); no-action zone survives recurring blips; routing still
+  worst at severe scarcity. The reviewers' map-mover concern is resolved.
+- **C2 refinement:** size the buffer to the PER-EVENT shortfall (B1920 total-duration sizing
+  loses to B960 per-event under recurrence — buffers refill).
+- **Coverage-collapse:** gated rules inert in no-disruption episodes (−0.5% vs base stock;
+  thesis RL lost 18% in its no-disruption row); standing buffers pay full premium (−34%
+  PSC with B480). Buffer-free compound = better insurance unless disruptions frequent.
+- **Shed equity:** Pareto on episode totals (both HCs better, urgent20); honest localized
+  cost — starved HC's worst 5-period fill 0.614→≈0.50 during transition.
+- Lever-flip map figure redesigned (categorical lever colors, plain-language axes).
+  Consolidated report being restructured for advisor readability (design agents).

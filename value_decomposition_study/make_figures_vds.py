@@ -72,10 +72,18 @@ def fig_frontier():
 
 
 def fig_flip_map():
+    """Categorical map: cell color = WHICH lever wins (the message); numbers in text.
+    Redesigned 2026-06-11: the earlier continuous red-green ratio shading conflated
+    'which lever' with 'how much' and read poorly."""
+    from matplotlib.colors import ListedColormap
+    from matplotlib.patches import Patch
     regimes = ['sat70', 'sat50', 'sat30']
     durations = [5, 17, 48]
-    best_label = np.empty((3, 3), dtype=object)
-    ratio = np.zeros((3, 3))
+    LEVERS = ['no action', 'routing', 'compound', 'buffer']
+    COLORS = {'no action': '#d9d9d9', 'routing': '#aec7e8',
+              'compound': '#98df8a', 'buffer': '#ffbb78'}
+    cat = np.zeros((3, 3), dtype=int)
+    label = np.empty((3, 3), dtype=object)
     for i, reg in enumerate(regimes):
         for j, dur in enumerate(durations):
             d = cell_dir(reg, dur, 'urgent0')
@@ -88,7 +96,6 @@ def fig_flip_map():
                 continue
             base = cands.get('ladder_a', np.nan)
             best = min(cands, key=cands.get)
-            ratio[i, j] = cands[best] / base
             if best == 'ladder_a':
                 lab = 'no action'
             elif best.startswith('ladder'):
@@ -97,21 +104,38 @@ def fig_flip_map():
                 lab = 'compound'
             else:
                 lab = 'buffer'
-            best_label[i, j] = f'{lab}\n{cands[best]/1e3:,.0f}k ({ratio[i,j]:.2f}x)'
-    fig, ax = plt.subplots(figsize=(8.5, 5.5))
-    im = ax.imshow(ratio, cmap='RdYlGn_r', vmin=0.2, vmax=1.1)
+            cat[i, j] = LEVERS.index(lab)
+            saving = 1 - cands[best] / base
+            label[i, j] = (f'{lab.upper()}\ncost {cands[best]/1e3:,.0f}k\n'
+                           f'saves {saving:.0%}' if saving > 0.005
+                           else f'{lab.upper()}\ncost {cands[best]/1e3:,.0f}k\n(nothing helps)')
+    fig, ax = plt.subplots(figsize=(8.2, 5.2))
+    ax.imshow(cat, cmap=ListedColormap([COLORS[l] for l in LEVERS]),
+              vmin=0, vmax=3)
     for i in range(3):
         for j in range(3):
-            if best_label[i, j]:
-                ax.text(j, i, best_label[i, j], ha='center', va='center', fontsize=9)
+            if label[i, j]:
+                ax.text(j, i, label[i, j], ha='center', va='center', fontsize=9.5)
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+    ax.set_xticks(np.arange(-0.5, 3), minor=True)
+    ax.set_yticks(np.arange(-0.5, 3), minor=True)
+    ax.grid(which='minor', color='white', linewidth=2.5)
+    ax.tick_params(which='both', length=0)
     ax.set_xticks(range(3))
-    ax.set_xticklabels([f'duration {d}' for d in durations])
+    ax.set_xticklabels(['short (5 periods)', 'moderate (17)', 'long (48)'], fontsize=10)
     ax.set_yticks(range(3))
-    ax.set_yticklabels(['sat70 (no scarcity)', 'sat50 (mild)', 'sat30 (severe)'])
-    ax.set_title('Lever-flip map: best measured policy per cell\n'
-                 '(cell text: lever, its dp-cost, ratio vs no-action; urgent0)',
-                 fontsize=10)
-    fig.colorbar(im, label='best dp-cost / no-action dp-cost')
+    ax.set_yticklabels(['mild\n(surviving chain\nhas headroom)',
+                        'moderate\n(supply 220 vs\ndemand 240)',
+                        'severe\n(supply 140 vs\ndemand 240)'], fontsize=9)
+    ax.set_xlabel('disruption duration')
+    ax.set_ylabel('scarcity severity')
+    ax.set_title('Which lever wins, by regime (urgent0, reporting seeds)\n'
+                 'cell: best policy, its during+post cost, saving vs doing nothing',
+                 fontsize=11)
+    ax.legend(handles=[Patch(facecolor=COLORS[l], label=l) for l in LEVERS],
+              loc='upper left', bbox_to_anchor=(1.01, 1.0), fontsize=9,
+              title='best lever', title_fontsize=9)
     plt.tight_layout()
     for ext in ('png', 'pdf'):
         fig.savefig(os.path.join(FDIR, f'lever_flip_map.{ext}'),

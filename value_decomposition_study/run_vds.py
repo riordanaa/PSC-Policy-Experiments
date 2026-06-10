@@ -196,16 +196,26 @@ def ds_factory_for(policy, a):
     return lambda ds: AllocFlexibleDS(ds, rule)
 
 
-def set_regime(regime, duration=48):
+def set_regime(regime, duration=48, recur2=0):
     """Returns the original DISRUPTIONS for restoration.
 
-    regime: 'slack' or 'satXX' (MN_healthy at XX% during the window).
-    duration: disruption length in periods; window = [110, 109+duration]
-    (duration=48 reproduces the thesis long window 110-157)."""
+    regime: 'none' (no disruption — coverage/premium measurement), 'slack', or 'satXX'
+    (MN_healthy at XX% during the window(s)).
+    duration: disruption length in periods; window 1 = [110, 109+duration].
+    recur2: if >0, a SECOND identical event starts at this period
+    (window 2 = [recur2, recur2+duration-1]) — the recurring-disruption regime.
+    The simulator restores capacity between windows (disruption.py:36-42)."""
     original = copy.deepcopy(config.DISRUPTIONS)
+    if regime == 'none':
+        config.DISRUPTIONS = []
+        return original
     end_day = 109 + int(duration)
     first = dict(original[0])
     first['end_day_1'] = end_day
+    if recur2:
+        first['happen_day_2'] = int(recur2)
+        first['end_day_2'] = int(recur2) + int(duration) - 1
+        first['decrease_factor_2'] = first['decrease_factor_1']
     if regime == 'slack':
         config.DISRUPTIONS = [first]
         return original
@@ -214,6 +224,8 @@ def set_regime(regime, duration=48):
     second = dict(first)
     second['manufacturer_index'] = 1
     second['decrease_factor_1'] = factor_healthy
+    if recur2:
+        second['decrease_factor_2'] = factor_healthy
     config.DISRUPTIONS = [first, second]
     return original
 
@@ -245,8 +257,8 @@ def post_build_for(policy):
     return wire
 
 
-def run_policy(policy, demand_config, seeds, a, regime='slack', duration=48):
-    original = set_regime(regime, duration)
+def run_policy(policy, demand_config, seeds, a, regime='slack', duration=48, recur2=0):
+    original = set_regime(regime, duration, recur2)
     # dsseat policies live in the THESIS world: as-shipped delta (agent.py hard-codes 0.1)
     delta = None if policy.startswith('dsseat') else DELTA
     try:
@@ -273,6 +285,7 @@ def main():
     ap.add_argument('--seeds', default='11-30')
     ap.add_argument('--regime', default='slack')
     ap.add_argument('--duration', type=int, default=48)
+    ap.add_argument('--recur2', type=int, default=0)
     ap.add_argument('--alloc-rule', default='prio_hc1')
     ap.add_argument('--buffer-b', type=float, default=0)
     ap.add_argument('--buffer-loc', default='disrupted',
@@ -301,10 +314,12 @@ def main():
 
     seeds = run_ladder.parse_seeds(args.seeds)
     regime_dir = args.regime if args.duration == 48 else f'{args.regime}_d{args.duration}'
+    if args.recur2:
+        regime_dir += f'_recur{args.recur2}'
     out_dir = os.path.join(HERE, 'results', regime_dir, args.config)
     os.makedirs(out_dir, exist_ok=True)
     df = run_policy(args.policy, args.config, seeds, args, regime=args.regime,
-                    duration=args.duration)
+                    duration=args.duration, recur2=args.recur2)
     path = os.path.join(out_dir, f'{args.policy}{args.tag}.csv')
     df.to_csv(path, index=False)
     print(f'wrote {path} ({len(df)} rows)', flush=True)
