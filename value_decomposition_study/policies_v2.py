@@ -246,6 +246,18 @@ class ShapedDS(AllocFlexibleDS):
         if self.throttle_c is not None and self._was_shortfall and backlog <= 0:
             self._was_shortfall = False   # caught up; throttle disengages
 
+        # A1: order-taper-toward-failed-source — a DISCRETE pre-registered rule triggered
+        # by the shared upstream signal (this DS's MN below 50% of nominal lines): while
+        # down, cap orders at the observed recent delivery rate x mn_taper_m. Detection
+        # never feeds a continuous optimizer; it gates this one rule.
+        if getattr(self, 'watch_mn', None) is not None \
+                and getattr(self, 'mn_taper_m', None) is not None:
+            nominal = getattr(self, '_mn_nominal', None) or self.watch_mn.num_active_lines
+            self._mn_nominal = max(nominal, self.watch_mn.num_active_lines)
+            if self.watch_mn.num_active_lines < 0.5 * self._mn_nominal:
+                recent_rate = sum(self._receipts) / max(1, len(self._receipts))
+                order_amount = min(order_amount, recent_rate * self.mn_taper_m)
+
         self.last_order_amount = order_amount
         self._orders.append(order_amount)
         num_upstream_nodes = len(self.ds.upstream_nodes)

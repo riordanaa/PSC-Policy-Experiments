@@ -41,6 +41,13 @@ ARGS = argparse.Namespace(delta=DELTA, sharp_p=4.0, writeoff_k=5.0, onset_share=
 
 
 def hc_factory_for(policy, a):
+    if policy.startswith('h5_compound'):
+        return lambda hc, i: UpstreamSignalRerouteHC(
+            hc, threshold_frac=0.5, down_share=0.1, **RUNG_C_HC)
+    if policy.startswith('h4b_ceiling'):
+        base = dict(RUNG_C_HC)
+        base.update(onset_window=DIS, onset_disrupted_ds=None, onset_disrupted_share=0.1)
+        return lambda hc, i: RecoveryAwareWriteoffHC(hc, revive_theta=0.5, **base)
     if policy == 'h1_recovery_writeoff' or policy.startswith('h4_ceiling'):
         base = dict(RUNG_C_HC)
         if policy.startswith('h4_ceiling'):
@@ -66,6 +73,23 @@ def hc_factory_for(policy, a):
 
 def ds_factory_for(policy, a):
     rule = a.alloc_rule
+    if policy.startswith('h5_compound'):
+        def f(ds):
+            dm = ShapedDS(ds, rule=rule)
+            dm.mn_taper_m = a.taper_m      # watch_mn wired post-build
+            return dm
+        return f
+    if policy.startswith('h4b_ceiling'):
+        counter = {'i': 0}
+
+        def f(ds):
+            i = counter['i']; counter['i'] += 1
+            b = a.buffer_b if i == 0 else 0
+            dm = ShapedDS(ds, rule=rule, buffer_b=b,
+                          buffer_window=(DIS[0] - a.jit_lead, DIS[1]))
+            dm.mn_taper_m = a.taper_m
+            return dm
+        return f
     if policy.startswith('h2_buffer') or policy.startswith('sat_buffer'):
         window = None
         loc = a.buffer_loc
@@ -114,37 +138,54 @@ def ds_factory_for(policy, a):
     return lambda ds: AllocFlexibleDS(ds, rule)
 
 
-def set_regime(regime):
-    """Returns the original DISRUPTIONS for restoration."""
+def set_regime(regime, duration=48):
+    """Returns the original DISRUPTIONS for restoration.
+
+    regime: 'slack' or 'satXX' (MN_healthy at XX% during the window).
+    duration: disruption length in periods; window = [110, 109+duration]
+    (duration=48 reproduces the thesis long window 110-157)."""
     original = copy.deepcopy(config.DISRUPTIONS)
+    end_day = 109 + int(duration)
+    first = dict(original[0])
+    first['end_day_1'] = end_day
     if regime == 'slack':
+        config.DISRUPTIONS = [first]
         return original
     assert regime.startswith('sat')
     factor_healthy = 1.0 - int(regime[3:]) / 100.0   # sat50 -> MN_healthy at 50% => factor 0.5
-    second = dict(config.DISRUPTIONS[0])
+    second = dict(first)
     second['manufacturer_index'] = 1
     second['decrease_factor_1'] = factor_healthy
-    config.DISRUPTIONS = [config.DISRUPTIONS[0], second]
+    config.DISRUPTIONS = [first, second]
     return original
 
 
 def post_build_for(policy):
-    if not policy.startswith('h3b_upstream'):
+    needs_hc = policy.startswith(('h3b_upstream', 'h5_compound'))
+    needs_ds = policy.startswith(('h5_compound', 'h4b_ceiling'))
+    if not (needs_hc or needs_ds):
         return None
 
     def wire(sim, hc_dms, ds_dms):
-        # info-sharing wiring: each HC observes the MN feeding each of its DS sources
+        # info-sharing wiring: agents observe the live state of the MN feeding each chain
         ds_to_mn = {}
         for mn_idx, ds_idx in config.MN_DS_LINKS:
             ds_to_mn[sim.distributors[ds_idx].name()] = sim.manufacturers[mn_idx]
-        for hc_dm in hc_dms:
-            hc_dm.mn_of_source = {u: ds_to_mn[u]
-                                  for u in hc_dm.hc.upstream_nodes if u in ds_to_mn}
+        if needs_hc:
+            for hc_dm in hc_dms:
+                if hasattr(hc_dm, 'mn_of_source'):
+                    hc_dm.mn_of_source = {u: ds_to_mn[u]
+                                          for u in hc_dm.hc.upstream_nodes
+                                          if u in ds_to_mn}
+        if needs_ds:
+            for ds_dm in ds_dms:
+                if getattr(ds_dm, 'mn_taper_m', None) is not None:
+                    ds_dm.watch_mn = ds_to_mn.get(ds_dm.ds.name())
     return wire
 
 
-def run_policy(policy, demand_config, seeds, a, regime='slack'):
-    original = set_regime(regime)
+def run_policy(policy, demand_config, seeds, a, regime='slack', duration=48):
+    original = set_regime(regime, duration)
     try:
         frames = []
         for seed in seeds:
@@ -168,6 +209,7 @@ def main():
                     choices=list(run_ladder.DEMAND_CONFIGS))
     ap.add_argument('--seeds', default='11-30')
     ap.add_argument('--regime', default='slack')
+    ap.add_argument('--duration', type=int, default=48)
     ap.add_argument('--alloc-rule', default='prio_hc1')
     ap.add_argument('--buffer-b', type=float, default=0)
     ap.add_argument('--buffer-loc', default='disrupted',
@@ -186,9 +228,11 @@ def main():
     args = ap.parse_args()
 
     seeds = run_ladder.parse_seeds(args.seeds)
-    out_dir = os.path.join(HERE, 'results', args.regime, args.config)
+    regime_dir = args.regime if args.duration == 48 else f'{args.regime}_d{args.duration}'
+    out_dir = os.path.join(HERE, 'results', regime_dir, args.config)
     os.makedirs(out_dir, exist_ok=True)
-    df = run_policy(args.policy, args.config, seeds, args, regime=args.regime)
+    df = run_policy(args.policy, args.config, seeds, args, regime=args.regime,
+                    duration=args.duration)
     path = os.path.join(out_dir, f'{args.policy}{args.tag}.csv')
     df.to_csv(path, index=False)
     print(f'wrote {path} ({len(df)} rows)', flush=True)

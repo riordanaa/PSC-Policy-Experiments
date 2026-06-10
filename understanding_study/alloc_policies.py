@@ -80,6 +80,27 @@ def flexible_allocate(agent, rule, now):
         vol = _recent_incoming_by_src(agent, now)
         order = sorted(demand_of, key=lambda a: vol.get(a, 0), reverse=True)
         allocate_to = _priority_caps(agent, demand_of, inventory, order)
+    elif rule == 'rotating_priority':
+        # fairness-neutral variant of strict priority: the prioritized HC alternates
+        # by period parity, so neither HC is systematically starved
+        hcs = sorted(a for a in demand_of if a.startswith('hc_'))
+        first = hcs[now % len(hcs)] if hcs else None
+        order = ([first] if first else []) + [a for a in demand_of if a != first]
+        allocate_to = _priority_caps(agent, demand_of, inventory, order)
+    elif rule == 'prio_floor':
+        # strict priority to hc-first, but the other HC is guaranteed a floor of 25%
+        # of available inventory first (fairness floor under scarcity)
+        hcs = sorted(a for a in demand_of if a.startswith('hc_'))
+        first, second = hcs[0], hcs[-1]
+        floor_amt = int(min(demand_of.get(second, 0), 0.25 * inventory))
+        allocate_to = {a: 0 for a in demand_of}
+        allocate_to[second] = floor_amt
+        remaining = inventory - floor_amt
+        give_first = int(min(demand_of.get(first, 0), remaining))
+        allocate_to[first] = give_first
+        remaining -= give_first
+        allocate_to[second] += int(min(demand_of.get(second, 0) - floor_amt,
+                                       max(0, remaining)))
     else:
         raise ValueError(f'unknown allocation rule: {rule}')
 

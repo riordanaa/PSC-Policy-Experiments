@@ -31,15 +31,18 @@ def main():
     ap.add_argument('--config', default='urgent0')
     ap.add_argument('--rungs', default='a,b,c,d')
     ap.add_argument('--seeds', default='11-30')
+    ap.add_argument('--duration', type=int, default=48)
     args_cli = ap.parse_args()
 
     ladder_args = argparse.Namespace(delta=0.3, sharp_p=4.0, writeoff_k=5.0,
                                      onset_share=0.1)
     seeds = run_ladder.parse_seeds(args_cli.seeds)
-    out_dir = os.path.join(HERE, 'results', args_cli.regime, args_cli.config)
+    regime_dir = (args_cli.regime if args_cli.duration == 48
+                  else f'{args_cli.regime}_d{args_cli.duration}')
+    out_dir = os.path.join(HERE, 'results', regime_dir, args_cli.config)
     os.makedirs(out_dir, exist_ok=True)
 
-    original = set_regime(args_cli.regime)
+    original = set_regime(args_cli.regime, args_cli.duration)
     try:
         for rung in args_cli.rungs.split(','):
             frames = []

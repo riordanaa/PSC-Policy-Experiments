@@ -31,6 +31,17 @@ def bullwhip(df_seed):
     return out
 
 
+def dual_accounting(df_seed):
+    """A1 amendment: system cost per phase EXCLUDING manufacturer backlog cost
+    (the dead-factory queue is an accounting convention, not a physical loss)."""
+    out = {}
+    for phase, (lo, hi) in PHASES.items():
+        d = df_seed[(df_seed['period'] >= lo) & (df_seed['period'] <= hi)]
+        mn_backlog_cost = 10.0 * (d['mn1_backlog'].sum() + d['mn2_backlog'].sum())
+        out[f'{phase}_mn_backlog_cost'] = mn_backlog_cost
+    return out
+
+
 def panel_for_csv(path):
     df = pd.read_csv(path)
     rows = []
@@ -38,6 +49,7 @@ def panel_for_csv(path):
         g = g.sort_values('period')
         m = seed_phase_metrics(g)
         m.update(bullwhip(g))
+        m.update(dual_accounting(g))
         m['seed'] = seed
         rows.append(m)
     return pd.DataFrame(rows)

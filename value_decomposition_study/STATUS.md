@@ -13,3 +13,14 @@
   dual accounting in analysis) + independent Phase-1 audit agent.
 - Next: Phase 2 (sat ladder, screen, frontier at (sat50,48), severity x duration map).
 - No gate failures. No kill conditions tripped.
+
+## 2026-06-10 — Phase-1 audit + addenda progress
+
+- **Independent audit: 12/12 PASS** (separate agent, self-contained pandas, no metrics-module
+  import; script at jobs tmp/audit_claims.py). h3b == d_oracle bit-identical confirmed
+  independently (max diff 0.0 across 60 columns). All reporting files contain exactly
+  seeds 11–30.
+- A1 taper tuning (seeds 1–10): m=1.0 wins (dp 270,759 vs no-taper 294,240). Dual accounting
+  shows the gain is almost entirely dead-factory bookkeeping (ex-MN-backlog: 218k vs 211k —
+  taper ~neutral under convention ii). Reporting runs in flight.
+- A3 allocation variants (rotating-priority, priority-with-floor) in flight on reporting seeds.

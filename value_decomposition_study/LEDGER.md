@@ -10,3 +10,6 @@
 | JIT pre-build B=120 (H4 component) | KEPT (ceiling only) | +11k value at 2.7k premium WITH oracle window; collapses for B>120; no patient benefit. Not worth deploying without oracle timing. |
 | Static-priority allocation | KEPT (fairness-costed baseline) | −12.4% vs proportional; dispersion cost ±0.023 fill. Both baselines carried per A3. |
 | backlog-priority / serve-captive allocation | DISCARDED (prior study) | +56% / +25% — alternating failures degrade both trust loops. |
+| rotating-priority allocation (A3) | DISCARDED | Catastrophic: dp 1,630k urgent0 (+53% vs static priority), lost 740 urgent20 — parity alternation = alternating failures, same failure mode as backlog-priority. No fairness-free priority exists. |
+| priority-with-floor 0.25 (A3) | DISCARDED | ≈ proportional on cost (1,203k vs 1,210k), dispersion WORSE than static priority (+0.031 vs +0.023) — dilutes priority without buying fairness. |
+| MN-down order taper m=1.0 (A1) | KEPT (with caveat) | Tuning: dp 270,759 vs 294,240 no-taper — but dual accounting shows gain is ~all dead-factory bookkeeping (ex-MN: 218k vs 211k, ~neutral). Kept for convention-(i) reporting; flagged as accounting-sensitive. |
