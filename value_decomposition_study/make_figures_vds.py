@@ -119,8 +119,45 @@ def fig_flip_map():
     plt.close(fig)
 
 
+def fig_ds_seat():
+    """H8: share of base stock's PSC-profit loss removed by simple DS-seat rules,
+    thesis world. Values from analyze_ds_seat (reporting seeds for finalists)."""
+    rows = [
+        ('shed x taper x standing (compound)', 0.491, '#2ca02c'),
+        ('shed x taper', 0.466, '#2ca02c'),
+        ('taper alone*', 0.249, '#ff7f0e'),
+        ('shed alone (demand-shaping)', 0.218, '#1f77b4'),
+        ('standing buffer B480', 0.052, '#1f77b4'),
+        ('shed_inverse (direction control)', -0.143, '#d62728'),
+    ]
+    fig, ax = plt.subplots(figsize=(9, 4.8))
+    labels = [r[0] for r in rows]
+    vals = [r[1] for r in rows]
+    cols = [r[2] for r in rows]
+    y = range(len(rows))
+    ax.barh(list(y), vals, color=cols)
+    ax.axvline(0, color='gray', lw=1)
+    ax.axvline(0.89, color='black', ls='--', lw=1.4,
+               label='thesis RL claim (~89%, Table 3.9 — unreplicated)')
+    ax.set_yticks(list(y))
+    ax.set_yticklabels(labels, fontsize=9)
+    ax.invert_yaxis()
+    ax.set_xlabel("share of base stock's episode-PSC-profit loss removed (thesis world)")
+    ax.set_title('Simple DS-seat rules vs base stock vs the thesis RL claim\n'
+                 '(*taper: gain is dead-factory bookkeeping; +9% lost patients alone '
+                 'under urgent20)', fontsize=10)
+    ax.legend(fontsize=8, loc='lower right')
+    ax.grid(alpha=0.3, axis='x')
+    plt.tight_layout()
+    for ext in ('png', 'pdf'):
+        fig.savefig(os.path.join(FDIR, f'ds_seat_shares.{ext}'),
+                    dpi=170, bbox_inches='tight')
+    plt.close(fig)
+
+
 if __name__ == '__main__':
     os.makedirs(FDIR, exist_ok=True)
     fig_frontier()
     fig_flip_map()
+    fig_ds_seat()
     print('figures written to', FDIR)

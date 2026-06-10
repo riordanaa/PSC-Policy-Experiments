@@ -32,7 +32,8 @@ from routing_study.policies import FlexibleHCDecisionMaker
 from understanding_study.alloc_policies import AllocFlexibleDS
 from value_decomposition_study.policies_v2 import (
     RecoveryAwareWriteoffHC, DetectRerouteHC, ShapedDS,
-    UpstreamSignalRerouteHC, DiscountWriteoffHC)
+    UpstreamSignalRerouteHC, DiscountWriteoffHC, HeadroomCappedRerouteHC,
+    CapacityAwareRerouteHC)
 
 RUNG_C_HC = dict(split_recipe='bytrust', sharp_p=4.0, writeoff_k=5.0)
 DELTA = 0.3
@@ -48,6 +49,11 @@ def hc_factory_for(policy, a):
         # the THESIS world: HC layer exactly as shipped (HC1 bytrust, HC2 equally,
         # delta hard-coded 0.1, no sharpening, no write-off)
         return lambda hc, i: FlexibleHCDecisionMaker(hc, **RUNG_A_HC[i])
+    if policy.startswith('c1_headroom'):
+        return lambda hc, i: HeadroomCappedRerouteHC(
+            hc, margin=a.margin, window=5, **RUNG_C_HC)
+    if policy.startswith('c1_capacity'):
+        return lambda hc, i: CapacityAwareRerouteHC(hc, margin=a.margin, **RUNG_C_HC)
     if policy.startswith('sat_full_oracle'):
         base = dict(RUNG_C_HC)
         base.update(onset_window=DIS, onset_disrupted_ds=None, onset_disrupted_share=0.1)
@@ -213,7 +219,8 @@ def set_regime(regime, duration=48):
 
 
 def post_build_for(policy):
-    needs_hc = policy.startswith(('h3b_upstream', 'h5_compound', 'sat_full', 'a1_superset'))
+    needs_hc = policy.startswith(('h3b_upstream', 'h5_compound', 'sat_full', 'a1_superset',
+                                  'c1_capacity'))
     needs_ds = policy.startswith(('h5_compound', 'h4b_ceiling', 'sat_full', 'a1_superset',
                                   'dsseat'))
     if not (needs_hc or needs_ds):
@@ -277,6 +284,7 @@ def main():
     # silently activated the throttle in every dsseat run (caught 2026-06-11)
     ap.add_argument('--ss-freeze', type=int, default=0)
     ap.add_argument('--gamma', type=float, default=0.5)
+    ap.add_argument('--margin', type=float, default=1.3)
     ap.add_argument('--mn-taper', type=float, default=0)
     ap.add_argument('--b-elev', type=float, default=0)
     ap.add_argument('--recovery-dwell', type=int, default=0)

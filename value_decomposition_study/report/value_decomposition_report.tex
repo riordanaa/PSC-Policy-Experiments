@@ -12,9 +12,11 @@
 \newcommand{\dsd}{DS\textsubscript{disrupted}}
 \newcommand{\dsh}{DS\textsubscript{healthy}}
 
-\title{\textbf{A Value Decomposition for Unforecastable Supply Disruptions:}\\
-\large information, routing, and inventory --- and how the dominant lever flips\\
-\normalsize (deterministic study on the thesis simulator; no RL; all numbers from audited runs)}
+\title{\textbf{A Value Decomposition for Unforecastable Supply Disruptions}\\
+\large information, routing, inventory --- and what simple distributor rules achieve
+against the RL claim\\
+\normalsize (deterministic studies on the thesis simulator; no RL; every number audited
+against raw run data)}
 \author{Aidan Hansen}
 \date{June 10--11, 2026}
 
@@ -22,191 +24,171 @@
 \maketitle
 
 \section*{Summary}
-We completed and stress-tested the value decomposition across two regimes: the thesis
-scenario (one manufacturer at 5\% for 48 periods --- ``slack,'' because the surviving chain
-has headroom) and a documented saturated extension (the surviving manufacturer also cut).
-Four results. \textbf{(1) In the slack regime the binding constraint is information, not
-intelligence:} a two-line reroute rule triggered on the \emph{shared upstream machine-state
-signal} exactly reproduces the perfect-foresight oracle (bit-identical trajectories), cutting
-cost from 1.06M to 295k and lost patients from 445 to 203; without that shared signal,
-\emph{no} downstream policy of any sophistication can act in time, because the disrupted
-distributor's own stock masks the failure from downstream observers for $\sim$6 periods
-($\sim$0.9M of value). The measured room left for any learned policy above the deployable
-compound is $\approx$0. \textbf{(2) Under scarcity the frontier becomes real and is owned by
-one composition:} a standing buffer \emph{at the surviving chain} + the info-sharing reroute
-+ an order taper achieves $-79\%$ cost at fill 0.990 --- 1.000 with the larger buffer ---
-(urgent0) and $-68\%$ lost patients (urgent20); the parts alone achieve less than half of
-that and fill $\le$ 0.99. \textbf{(3) The
-dominant lever flips along two boundaries} --- no action (disruptions shorter than the
-stock-cover window) $\to$ routing (slack) $\to$ compound (mild scarcity) $\to$ buffer-only
-(severe scarcity, where sharp rerouting becomes the \emph{worst} measured policy).
-\textbf{(4) Every ``clever'' reactive rule we tested} (delivery-rate detection,
-backlog-chasing or rotating allocation, accounting fixes for the glut) \textbf{lost to a
-simpler alternative}, and three prior headline numbers (the $-468$k/$-654$k decomposition,
-the ``insurance captures 42\%'' result, and static-priority allocation's 12\% gain) were
-shown to be artifacts of regime or of the broken routing layer. All gates passed; both
-phases were independently audited by an agent re-deriving every number from raw CSVs
-(Phase 1: 12/12 PASS; Phase 2: 11/12, the exception being a display-rounding over-statement
-of one fill rate, corrected throughout this report).
+Across two regimes (the thesis scenario, where the surviving chain has headroom; and a
+documented saturated extension, where it doesn't) and three echelon levers, the value
+decomposition is now complete and stress-tested. \textbf{(1) Information is the binding
+constraint in the thesis-severity regime}: a two-line reroute on the \emph{shared upstream
+machine-state} signal reproduces the perfect-onset oracle bit-for-bit (1.06M $\to$ 295k;
+lost patients 445 $\to$ 203); downstream delivery statistics are structurally blind for
+$\sim$6 periods (the dead distributor serves from stock). Verification corrected our own
+earlier claim: with the buffer \emph{correctly located}, true pre-onset foresight is worth
+$\sim$54k ($\sim$5\%), not zero. \textbf{(2) From the distributor's seat --- the levers the
+thesis DRL actually controls --- simple rules beat base stock decisively}: a 3-parameter
+compound (\emph{serve the captive HC while your manufacturer is down $\times$ stop ordering
+from the dead factory $\times$ standing buffer}) removes \textbf{49--51\% of base stock's
+episode-profit loss} in the thesis's own world and metric, with better fill and fewer lost
+patients --- roughly \emph{half} of the thesis RL's claimed 89\% (an unreplicated number
+whose baseline configuration we still need from the author). Demand-shaping through the
+trust loop is confirmed real by a direction control. \textbf{(3) Under scarcity, one
+composition owns the frontier} (buffer-at-the-surviving-chain + reroute + taper: $-79\%$,
+fill 0.99--1.00; lost patients $-68\%$), and \textbf{demand-aware buffer sizing} is the
+robust knob --- sizing B to (demand $-$ surviving deliverable) $\times$ duration cuts lost
+patients to \textbf{41 vs.\ 505} at the frozen-grid optimum. \textbf{(4) Two clean negatives
+sharpen the design rules}: severity-aware redirect caps fail in both natural forms (orders
+are the supplier's production signal --- capping them throttles the ramp), and the buffer's
+optimal \emph{location} flips to the disrupted chain at severe scarcity ($-30\%$ vs.\ the
+healthy location). All phases were independently audited from raw CSVs (12/12, 11/12 with
+one display-rounding correction, 16/16).
 
-\section{Setup and protocol}
+\section{Protocol}
 
 \begin{table}[h]
 \centering\small
-\caption{Protocol. Everything runs on the verified harness of the routing study.}
 \begin{tabular}{lp{10.8cm}}
 \toprule
-Baselines & fairness-neutral (rung-c routing + proportional allocation, 1.21M) and
-fairness-costed (+ static priority, 1.06M), both carried through all comparisons \\
-Seeds & pre-registered: tuning 1--10 (all parameter choices), reporting 11--30 (all
-reported numbers), paired; RNG-reseed fix in place (gate-guarded) \\
-Scoring & system-level (six agents), phase-stratified; dual accounting: full cost and
-cost excluding manufacturer-backlog (dead-factory queue bookkeeping) \\
-Panel & fill rate, lost patients (urgent20 only, never pooled), peak backlogs, AUB,
-holding-vs-backlog decomposition, glut, HC dispersion, bullwhip \\
-Saturated regime & documented scope expansion: MN\textsubscript{healthy} also cut
-(to 70/50/30\%) during the window; durations \{5, 17, 48\}; gates re-run per regime
-(saturation sanity: fill 0.875 $<$ 1 under routing at sat50) \\
-Detection constraint & detection may trigger discrete pre-registered rules (reroute,
-order-taper) --- never a continuous ordering optimizer \\
-Audit & each phase independently re-derived from raw CSVs by a separate agent
-(no shared analysis code); Phase 1: 12/12 PASS \\
+Baselines & fairness-neutral (proportional) and fairness-costed (static priority), both
+carried; thesis-world comparisons use the as-shipped configuration \\
+Seeds & tuning 1--10 (all parameter choices), reporting 11--30 (all reported numbers),
+paired; RNG-reseed fix gate-guarded \\
+Scoring & system-level, phase-stratified; dual accounting (full vs.\ excluding
+manufacturer-queue bookkeeping); thesis-metric (episode PSC profit) for DS-seat claims \\
+Gates & bit-exact baseline reproduction (library AND CLI paths), determinism, conservation,
+cross-seed variance; two run-batches were discarded after gates/diagnostics caught
+contamination (CLI defaults) and a bootstrap deadlock --- both incidents logged \\
+Audit & every phase re-derived from raw CSVs by an independent agent (no shared analysis
+code); one display-rounding over-claim caught and corrected \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\section{Phase 1 --- the slack regime: information is the binding constraint}
+\section{The thesis-severity regime: information, then almost nothing}
+
+The surviving manufacturer ramps with incoming orders up to a 400/period cap
+($\sim$3.3$\times$ its normal load), so rerouting alone restores full service ---
+\emph{if} it happens at onset. The deployable compound (upstream-signal reroute + order
+taper + priority allocation) reaches 273k against the 1.06M routing-fixed baseline.
+Verification (A1) rebuilt the oracle as a true superset and corrected our earlier claim:
 
 \begin{table}[h]
 \centering\small
-\caption{Slack regime (urgent0 dp-cost = during+post system cost, reporting seeds;
-lost patients from urgent20). Full hypothesis cards in \texttt{hypotheses/}.}
-\begin{tabular}{lrrr}
+\caption{Corrected foresight decomposition (slack regime, urgent0, reporting seeds).}
+\begin{tabular}{lrr}
 \toprule
-\textbf{Policy} & \textbf{dp-cost} & \textbf{ex-MN-backlog} & \textbf{lost} \\
+& \textbf{dp-cost} & \textbf{increment} \\
 \midrule
-compound baseline (routing + priority alloc) & 1,062,538 & --- & 445 \\
-$+$ upstream-signal reroute (h3b) & 294,796 & 212,636 & 203 \\
-$+$ MN-down order taper (= deployable compound) & \textbf{273,088} & 220,648 & 204 \\
-oracle ceiling (perfect onset + JIT pre-build) & 284,120 & 234,485 & 207 \\
+deployable compound (signal reroute + taper) & 273,088 & --- \\
+$+$ JIT buffer at the HEALTHY DS, zero lead (deployable) & 236,762 & $-$36k \\
+$+$ 10-period pre-onset start (true foresight) & 182,222 & $-$55k \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textbf{The information result.} The upstream-signal reroute --- flag a source while its
-feeding manufacturer is below 50\% of nominal lines (exactly the visibility the thesis's
-full information-sharing scenario grants), step the order split away from it --- reproduces
-the perfect-foresight oracle \emph{bit-for-bit} (independently audited). A delivery-rate
-detector, by contrast, is structurally blind for $\sim$6 periods (the dead distributor
-serves from its own stock, so its delivery statistics look healthy exactly while the
-pile-up begins) and ends up \emph{worse} than the built-in trust mechanism, which is itself
-such a detector. The $\sim$750k between ``no sharing'' and ``sharing'' is therefore an
-\emph{information} value, not an intelligence value --- no downstream policy, learned or
-not, can close it. \textbf{This reframes the thesis's information-sharing narrative: the
-value of sharing is real, large, and capturable by a two-line rule.}
+The bounded statement of the residual: no rule in the enumerated family
+\{buffer (size$\times$location$\times$timing), taper, throttle, SS-freeze,
+reroute (trigger$\times$share), allocation (12 rules)\} leaves measurable room above the
+best composition; a learned policy would need a mechanism none of these expresses, and we
+identify no candidate --- but the family bound is the claim, and A1 itself shows why
+(one mis-located lever had hidden $\sim$90k).
 
-\textbf{The deployable compound now IS the measured ceiling.} Adding the order taper
-(a discrete rule on the same shared signal: while your manufacturer is down, order only what
-it delivers) the deployable compound (273k) \emph{beats} every oracle-assisted composition
-we built (284k+) --- foresight adds nothing beyond the shared signal. Dual accounting keeps
-the taper honest: its gain is almost entirely dead-factory queue bookkeeping (ex-MN it is
-$\approx$neutral), and it does not move patients.
+\section{The distributor's seat: the hypothesis test}
 
-\textbf{Negative results (all gated, all audited).} Standing buffers in the slack regime
-have zero-to-\emph{negative} coverage at every size (a buffered \dsd{} feeds the dead
-factory's queue and the recovery glut) --- this supersedes the earlier ``permanent insurance
-captures 42\%'' finding, which was an artifact of the broken routing layer. Accounting-side
-glut fixes fail by construction (the double-order is committed mid-window); instant
-rerouting removes the glut as a side effect (peak excess 478 vs 2,967). Fairness-neutral
-variants of priority allocation fail: rotating priority is catastrophic ($+$53\%, lost 740)
---- the trust feedback rewards \emph{consistency}; there is no fairness-free priority.
-
-\section{Phase 2 --- scarcity: the frontier becomes real}
-
-When the surviving manufacturer is also cut to 50\% (supply 220 vs demand 240/period),
-routing still reduces cost ($-26\%$ deployable, $-50\%$ oracle) but \emph{cannot create
-product}: fill pins at $\sim$0.9 and lost patients barely move across the entire routing
-ladder (1,768 $\to$ $\sim$1,600; in slack the same ladder achieved 203). The residual is
-inventory's domain:
+All prior DS-seat bounds were measured in the routing-fixed world; the thesis DRL lived in
+the as-shipped world, where the distributor's allocation drives the trust-routed HC's
+behavior --- the only routing lever there. Testing the full decision-space grid there, on
+the thesis's own metric:
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{../results/figures/frontier_sat50_d48.pdf}
-\caption{The premium--coverage frontier under scarcity (sat50, d48, urgent0). The
-composition (orange) dominates the buffer-only curve at matched premium by $\sim$2.4$\times$
---- the pre-registered confirmatory test passes. Compound at B960: dp-cost 766,830
-($-79\%$ vs no action), fill 0.990, premium 49k; at B1440 fill reaches 1.000. Under urgent20
-(deeper effective scarcity) the larger buffer wins: lost patients 505 vs baseline 1,591
-($-68\%$). (An earlier draft over-stated B960's fill as 1.000 from display rounding; the
-independent audit caught it --- exact values shown.)}
+\includegraphics[width=0.92\textwidth]{../results/figures/ds_seat_shares.pdf}
+\caption{Share of base stock's episode-PSC-profit loss removed by simple distributor rules
+(thesis world, reporting seeds, audited). The compound reaches 49.1\% (50.7\% under urgent
+demand) with fill 0.858 vs.\ 0.808 and lost patients 1,575 vs.\ 1,768. The direction
+control (serve the trust-sensitive HC instead of the captive) is \emph{worse than doing
+nothing} ($-$14.3\%) --- demand-shaping through the trust loop is real and directional.
+State-elevated ordering is absent because it is dead by supply physics: inventory cannot
+climb during the disruption (4 units measured); only the standing form pre-positions.}
 \end{figure}
 
-Three structural findings from the screen: buffer \textbf{location} is first-order
-(at the surviving chain $\gg$ split $\gg$ at the disrupted chain, which is near-worthless);
-ordering shapers alone do nothing (supply-bound); and \textbf{static-priority allocation
-flips harmful under scarcity} ($+$23\% vs proportional) --- starving one health center at
-the queue-bound surviving distributor collapses its trust in the \emph{healthy} chain and
-routes its orders toward the dead one. The slack-regime allocation gain does not transfer.
+Reading: \textbf{simple distributor rules beat base stock decisively but reach only half of
+the thesis RL's claimed 89\%}. The gap is attributable to (a) a mechanism outside the
+enumerated family --- none identified --- and/or (b) baseline non-comparability: Table 3.9
+is unreplicated (our own corrected-pipeline DRL run \emph{lost} to base stock), and its
+exact baseline configuration is the single most valuable piece of missing information
+(request pending with the thesis author). One caveat travels with the compound: the taper's
+contribution is dead-factory bookkeeping under the cost lens and costs $+$9\% lost patients
+\emph{when used alone} under urgent demand; the shed component offsets it.
+
+\section{Scarcity: the frontier, the robust knob, and two honest negatives}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.78\textwidth]{../results/figures/lever_flip_map.pdf}
-\caption{The lever-flip map (urgent0, reporting seeds; cell = best measured policy).
-Two boundaries: a \emph{duration} boundary at the stock-cover window ($\sim$6 periods ---
-for shorter disruptions every response is churn and the oracle reroute is the worst
-overreaction), and a \emph{severity} boundary at the surviving chain's headroom (at sat30,
-d48, sharp rerouting is the worst measured policy --- 7,657k vs 5,133k for doing nothing ---
-while a shortfall-sized buffer reaches fill 1.000 at $-32\%$).}
+\includegraphics[width=0.74\textwidth]{../results/figures/lever_flip_map.pdf}
+\caption{The lever-flip map (urgent0, reporting seeds), with the sat30/d48 cell CORRECTED
+by the location screen: at severe scarcity the buffer belongs AT THE DISRUPTED CHAIN
+(2,417k, $-$30\% vs.\ the healthy location) --- stock goes where the unservable demand is,
+once the surviving chain is too weak to absorb rerouting. The two boundaries stand: no
+response pays below the $\sim$6-period stock-cover duration; routing dominates with
+surviving headroom; the compound owns mild scarcity; inventory owns severe scarcity.}
 \end{figure}
 
-\clearpage
+\textbf{The robust knob is demand-aware buffer sizing} (B $=$ (measured demand $-$
+surviving deliverable) $\times$ duration): at sat50 under urgent demand it cuts lost
+patients to \textbf{41 vs.\ 505} at the frozen-grid optimum (dp-cost 1,726k vs.\ 1,865k,
+reporting seeds); its other endpoint (sat30 $\to$ B=4,800) independently matched the
+measured optimum.
+
+\textbf{Negative result, kept honest:} the severity-aware redirect (cap rerouted volume at
+the surviving chain's headroom) fails in BOTH natural implementations --- delivery-observation
+caps throttle the supplier's ramp (orders are the production signal in this simulator), and
+capacity-signal caps still under-order because over-ordering costs the orderer nothing here.
+The sat30 routing penalty is a delivery-mix problem, not an order-volume problem, and is
+fixed by buffer placement, not by order caps. ``One robust routing policy across the map''
+does not exist in this class; per protocol the 9-cell sweep for the refuted policy was not
+run.
+
 \section{What we learned}
-
 \begin{enumerate}
-\item \textbf{The decomposition, completed:} value under unforecastable disruption =
-information sharing (the largest single item in the slack regime, $\sim$750k, capturable by
-a two-line rule) $+$ routing flexibility (dominant while the surviving chain has headroom)
-$+$ correctly-located inventory (necessary exactly when it doesn't) $-$ over-reaction
-(responses to sub-stock-cover disruptions; sharp rerouting under severe scarcity; clever
-reactive allocation everywhere).
-\item \textbf{The room for learned policies is $\approx$0 in the slack regime} (the
-deployable compound matches/beats every oracle composition) \textbf{and not visible under
-scarcity} (no measured policy beats the simple compound; the space closed under
-screen-and-compose --- VNS was, per protocol, not justified: there is no residual gap for it
-to search).
-\item \textbf{Reactive cleverness consistently backfires} via the trust feedback loop:
-delivery-rate detection, backlog-priority, serve-captive, rotating priority, and (under
-scarcity) static priority all lose to simpler alternatives. Consistency and correct
-\emph{location} beat adaptivity in every measured case.
-\item \textbf{Three prior numbers are formally superseded:} the $-468$k/$-654$k
-decomposition and the 42\%-insurance result (artifacts of the broken routing layer), and
-allocation's 12\% gain (regime-specific, sign-flips under scarcity).
-\item \textbf{Methodological:} the dual-accounting amendment caught a lever (the taper)
-whose value is bookkeeping; the audit protocol (independent re-derivation) passed both
-phases; two latent simulator bugs from earlier studies (RNG reseed, dead config) remained
-guarded by gates throughout.
+\item The decomposition: \textbf{information sharing} (largest single item at thesis
+severity; two-line rule = oracle) $+$ \textbf{routing} (dominant with surviving headroom)
+$+$ \textbf{inventory, correctly LOCATED and demand-SIZED} (necessary under scarcity;
+location flips to the disrupted chain when the surviving chain is weak) $+$ \textbf{true
+foresight} ($\sim$5\%, corrected from ``nothing'') $-$ \textbf{over-reaction} (responses
+below stock-cover duration; sharp or capped rerouting under severe scarcity; clever
+reactive allocation outside the captive-shed case).
+\item From the DS seat, \textbf{the user's hypothesis holds in spirit}: 3 parameters of
+simple rules beat base stock by half of what the RL claimed, with the residual unresolvable
+until the thesis baseline is known.
+\item Cleverness keeps losing to structure: five reactive rules backfired; both redirect
+caps backfired; the two levers that worked everywhere are \emph{where you put stock} and
+\emph{what signal you share}.
+\item Process: two contaminated batches were caught by gates/diagnostics and discarded;
+one rounding over-claim was caught by independent audit and corrected --- the verification
+protocol earned its cost.
 \end{enumerate}
 
 \section{Next steps}
-
 \begin{enumerate}
-\item \textbf{Severity-aware redirect} (new policy class --- awaiting your approval, spec in
-\texttt{NEXT\_PLAN.md}): cap rerouted volume at the surviving chain's observed headroom.
-Hypothesis: removes the only failure mode of the compound (over-redirection at severe
-scarcity), making one policy safe across the whole map.
-\item \textbf{Demand-aware buffer sizing} (B from measured demand minus surviving capacity
---- the urgent20 result shows the frozen urgent0-scaled grid undersizes when demand grows).
-\item \textbf{Recurring-disruption axis} (new regime --- your call): standing insurance
-amortizes across events; a single-event episode understates it.
-\item \textbf{For the eventual corrected DRL:} the bar is the compound, per regime ---
-273k (slack) / 767k--1,865k (sat50, by config) --- same seeds, same gates, both accounting
-conventions, fairness-preserving. Given items 1--3, the honest expectation remains that
-simple rules saturate this environment; the DRL comparison should be framed as measuring
-\emph{how close} learning comes to the structured optimum, not whether it ``wins.''
-\item \textbf{Paper framing} (consistent with the advisor's decision-first agenda): a
-value-of-information and value-of-structure decomposition with a lever-flip map, in which
-learned policies have measured, near-zero residual room --- a cost-of-AI result grounded
-entirely in audited, deterministic experiments.
+\item \textbf{Obtain the thesis Table 3.9 configuration} (baseline included) --- gates the
+interpretation of the 49\%-vs-89\% gap; everything else about the DS-seat story is settled.
+\item \textbf{Recurring-disruption axis} (held, new regime): required pre-publication
+robustness check --- premium amortization could move the map's buffer cells.
+\item \textbf{Ramped onset} (held): the second paper --- the one regime where detection
+(vs.\ info-sharing) could earn value, given the masking result.
+\item \textbf{When the corrected DRL arrives}: regime-dependent bars, all simple ---
+thesis world: the DS-seat compound ($-$49\%); slack system: 273k; sat50: 767k--1,726k with
+demand-aware B. Framing: measure how close learning comes to the structured optimum.
+\item Paper assembly: the three-lever decomposition with the lever-flip map and the DS-seat
+result as the RL-relevant centerpiece, all claims carrying their audit trail.
 \end{enumerate}
 
 \end{document}

@@ -96,3 +96,22 @@
   phrasing in place (A2).
 - Independent Part A+B audit agent running. **Part C NOT started — awaiting user review of
   Part B per the plan's hard decision point.**
+
+## 2026-06-11 — Part C complete (user approved continuation); STUDY WRAPPED
+
+- Part A+B audit: 16/16 PASS.
+- **C2 (demand-aware buffer sizing): the robust knob.** B* = (demand − surviving
+  deliverable) × duration. sat50/urgent20 reporting: lost patients **41 vs 505** at the
+  frozen-grid optimum (dp 1,726k vs 1,865k). Other endpoint (sat30 → 4,800) independently
+  = the measured frozen optimum.
+- **C3: published sat30 map cell CORRECTED.** At severe scarcity the buffer belongs at the
+  DISRUPTED chain: B4800-disrupted = 2,417k reporting (−30% vs healthy 3,466k). Location
+  optimum flips with severity. Map figure regenerated.
+- **C1 (severity-aware redirect): REFUTED in both forms (H9).** Delivery-cap throttles the
+  supplier's ramp (orders are the production signal); capacity-cap still under-orders
+  (over-ordering costs the orderer nothing). Plus one bug iteration (bootstrap deadlock at
+  the simulator's ≤1-unit order discard) — caught by margin-invariant 94M cost, logged.
+  9-cell sweep killed per protocol.
+- Consolidated report rewritten (corrections + bounded phrasing + H8 + Part C) and compiled
+  (`value_decomposition_report_v2.pdf` — original filename locked by a viewer). Figures
+  regenerated incl. new DS-seat shares bar + corrected map. Part-C audit agent running.

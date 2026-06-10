@@ -30,7 +30,7 @@ def _args(**over):
         taper_thresh=0.5, taper_m=1.0, throttle_c=0, ss_freeze=0,
         theta_down=0.5, w_down=3, theta_up=0.6, w_up=3, gamma=0.5,
         mn_taper=0, b_elev=0, recovery_dwell=0, prebook_f=0, smooth_cap=0,
-        oo_gamma=-1, alloc_alpha=0.2)
+        oo_gamma=-1, alloc_alpha=0.2, margin=1.3)
     for k, v in over.items():
         setattr(ns, k, v)
     return ns

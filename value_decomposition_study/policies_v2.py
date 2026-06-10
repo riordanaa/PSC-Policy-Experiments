@@ -150,6 +150,100 @@ class UpstreamSignalRerouteHC(DetectRerouteHC):
                 self.trigger_log.append((now, up, 'down' if is_down else 'up'))
 
 
+class HeadroomCappedRerouteHC(FlexibleHCDecisionMaker):
+    """C1: severity-aware redirect. Rung-c trust^p routing, but the volume sent to any
+    SURVIVING source is capped at margin x that source's observed recent delivery rate
+    (per-HC, rolling mean over `window` periods). Excess stays with the original split.
+    Rationale (H7): sharp redirection overloads a capacity-cut surviving chain (worst
+    measured policy at sat30/d48); the surviving MN ramps with orders up to its cap, so
+    margin>1 lets the redirect PROBE upward at a controlled rate instead of slamming."""
+
+    def __init__(self, hc, margin=1.3, window=5, **kw):
+        super().__init__(hc, **kw)
+        self.margin = margin
+        self.window = window
+        self._recent_deliv = {}   # source -> deque of recent delivery amounts
+
+    def _per_upstream_amounts(self, orderAmount, now):
+        amounts = super()._per_upstream_amounts(orderAmount, now)
+        # update per-source delivery observations
+        deliv = {u: 0.0 for u in self.hc.upstream_nodes}
+        for d in self.hc.get_history_item(now)['delivery']:
+            deliv[d['src']] = deliv.get(d['src'], 0.0) + d['item'].amount
+        for u in self.hc.upstream_nodes:
+            dq = self._recent_deliv.setdefault(u, deque(maxlen=self.window))
+            dq.append(deliv.get(u, 0.0))
+        # cap each source's share at margin x its observed delivery rate; excess goes to
+        # the other source(s) proportionally to their uncapped amounts
+        ups = list(self.hc.upstream_nodes)
+        # the cap binds only on the redirect SURGE: it is floored at the source's equal
+        # share of this period's order, so baseline ordering always bootstraps. (First
+        # version capped everything at margin x rate + 1 from a cold start of rate=0;
+        # the simulator drops orders <= 1 unit, so the system deadlocked at zero flow —
+        # caught in tuning by a margin-invariant 94M cost. See LEDGER.)
+        def cap_of(u):
+            dq = self._recent_deliv[u]
+            rate = sum(dq) / max(1, len(dq))
+            return max(int(self.margin * rate) + 1,
+                       int(float(orderAmount) / max(1, len(ups))))
+        capped = {}
+        excess = 0
+        for u in ups:
+            give = min(amounts.get(u, 0), cap_of(u))
+            excess += amounts.get(u, 0) - give
+            capped[u] = give
+        if excess > 0:
+            room = {u: max(0, cap_of(u) - capped[u]) for u in ups}
+            tot_room = sum(room.values())
+            if tot_room > 0:
+                for u in ups:
+                    add = min(room[u], int(excess * room[u] / tot_room))
+                    capped[u] += add
+            # any residual is not ordered this period; the order formula re-adds it
+            # via backlog next period
+        return capped
+
+
+class CapacityAwareRerouteHC(FlexibleHCDecisionMaker):
+    """C1 variant 2: cap each source's share at margin x its SHARED CAPACITY signal
+    (feeding MN's live active_lines x line_capacity, split across the HCs it serves) —
+    the same info-sharing channel as the h3b reroute. Unlike the delivery-observation cap,
+    capacity does not depend on our own orders, so it cannot throttle the supplier's ramp.
+    mn_of_source wired post-build (as in UpstreamSignalRerouteHC); n_hcs static (=2)."""
+
+    def __init__(self, hc, margin=1.1, n_hcs=2, **kw):
+        super().__init__(hc, **kw)
+        self.margin = margin
+        self.n_hcs = n_hcs
+        self.mn_of_source = {}    # injected post-build
+
+    def _per_upstream_amounts(self, orderAmount, now):
+        amounts = super()._per_upstream_amounts(orderAmount, now)
+        ups = list(self.hc.upstream_nodes)
+
+        def cap_of(u):
+            mn = self.mn_of_source.get(u)
+            if mn is None:
+                return 10 ** 9
+            capacity = mn.num_active_lines * mn.line_capacity
+            return max(int(self.margin * capacity / self.n_hcs),
+                       int(float(orderAmount) / max(1, len(ups))))
+
+        capped = {}
+        excess = 0
+        for u in ups:
+            give = min(amounts.get(u, 0), cap_of(u))
+            excess += amounts.get(u, 0) - give
+            capped[u] = give
+        if excess > 0:
+            room = {u: max(0, cap_of(u) - capped[u]) for u in ups}
+            tot_room = sum(room.values())
+            if tot_room > 0:
+                for u in ups:
+                    capped[u] += min(room[u], int(excess * room[u] / tot_room))
+        return capped
+
+
 class DiscountWriteoffHC(FlexibleHCDecisionMaker):
     """H1b: instead of writing dead-source stale pipeline off entirely (gamma=0, the
     rung-c behavior that double-orders) or counting it fully (gamma=1, the original
