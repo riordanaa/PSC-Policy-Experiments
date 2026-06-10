@@ -69,8 +69,14 @@ comparison figures are produced only if (1) happens or the ceiling is re-derived
 
 ## Methodology guards
 
-- **Seed discipline:** e.g. seeds 1–10 for tuning rung (c) parameters, seeds 11–30 held out for
-  all reported numbers. No parameter chosen on reporting seeds.
+- **Seed discipline (FIXED, pre-registered before any run):** tuning seeds = [1–10], used ONLY
+  to choose rung-(c) parameters (δ′, p, k); reporting seeds = [11–30], used for every reported
+  number. No parameter is chosen using reporting seeds.
+- **Doroudi et al. (2020) prior (required addition):** the hypothesis doc carries, verbatim:
+  "Doroudi et al. (2020) — same group, same topology — found non-monotone effects:
+  trust-sensitive buyers can be disadvantaged in certain disruption regimes due to supplier
+  preference for stable demand; this is prior evidence that flipping HC2 to trust-split may
+  not simply help."
 - **Verification before trusting results (single seed):** (b) actually changes HC2's split shares
   over the disruption; (c) actually reduces counted stranded on-order; conservation
   demand = served + backlogged (+ lost under urgent=20) holds each period system-wide; rung (a)
