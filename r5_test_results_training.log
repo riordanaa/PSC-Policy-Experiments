@@ -1,0 +1,574 @@
+=== r5 Reward Diagnostic ===
+[config] === THESIS-FAITHFUL OVERNIGHT RUN ===
+  layer_type    : GRU
+  hidden_size   : 128  (GRU width same)
+  dropout       : 0.3
+  actor_lr      : 0.01  (x 0.3 for GRU)
+  critic_lr     : 0.01  (x 0.3 for GRU)
+  history_size  : 8
+  info_sharing  : full
+  disruption    : magnitude=0.95, window=[110, 157]
+  MAB arms      : single equal-weight [[1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
+  proxy weight  : 0.0
+  train_episodes: 500
+  eval_seeds    : 10 seeds
+
+=== TRAINING (500 episodes) ===
+Training:   0%|          | 0/500 eps [00:00<?]Training:   0%|          | 1/500 eps [01:06<9:14:53]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   0%|          | 2/500 eps [02:08<8:51:39]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   1%|          | 3/500 eps [03:13<8:53:04]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   1%|          | 4/500 eps [04:17<8:49:37]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   1%|          | 5/500 eps [05:19<8:44:23]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   1%|          | 6/500 eps [06:27<8:55:38]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   1%|▏         | 7/500 eps [07:31<8:50:49]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   2%|▏         | 8/500 eps [08:34<8:46:41]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   2%|▏         | 9/500 eps [09:41<8:52:17]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   2%|▏         | 10/500 eps [10:51<9:03:56]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   2%|▏         | 11/500 eps [12:01<9:10:30]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   2%|▏         | 12/500 eps [13:12<9:17:45]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   3%|▎         | 13/500 eps [14:21<9:16:45]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   3%|▎         | 14/500 eps [15:30<9:16:48]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   3%|▎         | 15/500 eps [16:39<9:17:50]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   3%|▎         | 16/500 eps [17:49<9:17:42]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   3%|▎         | 17/500 eps [18:58<9:17:30]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   4%|▎         | 18/500 eps [20:07<9:16:00]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   4%|▍         | 19/500 eps [21:16<9:13:43]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   4%|▍         | 20/500 eps [22:27<9:17:12]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   4%|▍         | 21/500 eps [23:38<9:17:58]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   4%|▍         | 22/500 eps [24:48<9:16:57]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   5%|▍         | 23/500 eps [25:52<9:03:46]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   5%|▍         | 24/500 eps [26:56<8:50:49]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   5%|▌         | 25/500 eps [27:58<8:39:04]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   5%|▌         | 26/500 eps [29:01<8:30:53]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   5%|▌         | 27/500 eps [30:03<8:24:36]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   6%|▌         | 28/500 eps [31:06<8:19:05]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   6%|▌         | 29/500 eps [32:09<8:17:30]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   6%|▌         | 30/500 eps [33:12<8:16:35]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   6%|▌         | 31/500 eps [34:15<8:13:04]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   6%|▋         | 32/500 eps [35:17<8:10:49]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   7%|▋         | 33/500 eps [36:20<8:09:54]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   7%|▋         | 34/500 eps [37:23<8:09:07]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   7%|▋         | 35/500 eps [38:27<8:09:31]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   7%|▋         | 36/500 eps [39:30<8:08:14]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   7%|▋         | 37/500 eps [40:33<8:06:17]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   8%|▊         | 38/500 eps [41:35<8:04:57]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   8%|▊         | 39/500 eps [42:39<8:05:36]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   8%|▊         | 40/500 eps [43:42<8:04:04]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   8%|▊         | 41/500 eps [44:45<8:02:05]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   8%|▊         | 42/500 eps [45:48<8:01:12]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   9%|▊         | 43/500 eps [46:51<8:00:07]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   9%|▉         | 44/500 eps [47:54<7:59:42]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   9%|▉         | 45/500 eps [48:57<7:58:26]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   9%|▉         | 46/500 eps [50:00<7:56:41]simulation runner successfully reset~~~~~~~~~~~~~
+Training:   9%|▉         | 47/500 eps [51:03<7:56:00]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  10%|▉         | 48/500 eps [52:06<7:55:00]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  10%|▉         | 49/500 eps [53:12<7:59:45]simulation runner successfully reset~~~~~~~~~~~~~
+                                                       [ep 50] checkpoint saved, curve flushed
+Training:  10%|▉         | 49/500 eps [54:15<7:59:45]Training:  10%|█         | 50/500 eps [54:15<7:57:25]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  10%|█         | 51/500 eps [55:18<7:55:21]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  10%|█         | 52/500 eps [56:23<7:56:55]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  11%|█         | 53/500 eps [57:30<8:02:50]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  11%|█         | 54/500 eps [58:34<7:59:13]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  11%|█         | 55/500 eps [59:37<7:54:48]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  11%|█         | 56/500 eps [1:00:40<7:52:07]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  11%|█▏        | 57/500 eps [1:01:43<7:49:05]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  12%|█▏        | 58/500 eps [1:02:47<7:48:56]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  12%|█▏        | 59/500 eps [1:03:50<7:46:29]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  12%|█▏        | 60/500 eps [1:04:53<7:44:18]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  12%|█▏        | 61/500 eps [1:05:56<7:42:23]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  12%|█▏        | 62/500 eps [1:06:59<7:41:16]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  13%|█▎        | 63/500 eps [1:08:02<7:39:49]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  13%|█▎        | 64/500 eps [1:09:06<7:39:35]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  13%|█▎        | 65/500 eps [1:10:09<7:38:11]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  13%|█▎        | 66/500 eps [1:11:11<7:36:17]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  13%|█▎        | 67/500 eps [1:12:14<7:34:29]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  14%|█▎        | 68/500 eps [1:13:17<7:34:00]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  14%|█▍        | 69/500 eps [1:14:20<7:31:56]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  14%|█▍        | 70/500 eps [1:15:23<7:30:45]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  14%|█▍        | 71/500 eps [1:16:25<7:28:43]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  14%|█▍        | 72/500 eps [1:17:28<7:28:07]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  15%|█▍        | 73/500 eps [1:18:31<7:26:48]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  15%|█▍        | 74/500 eps [1:19:34<7:25:18]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  15%|█▌        | 75/500 eps [1:20:36<7:24:00]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  15%|█▌        | 76/500 eps [1:21:39<7:23:00]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  15%|█▌        | 77/500 eps [1:22:43<7:25:56]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  16%|█▌        | 78/500 eps [1:23:46<7:23:26]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  16%|█▌        | 79/500 eps [1:24:48<7:20:47]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  16%|█▌        | 80/500 eps [1:25:51<7:19:01]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  16%|█▌        | 81/500 eps [1:26:53<7:17:22]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  16%|█▋        | 82/500 eps [1:27:56<7:16:08]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  17%|█▋        | 83/500 eps [1:28:58<7:15:22]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  17%|█▋        | 84/500 eps [1:30:01<7:13:36]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  17%|█▋        | 85/500 eps [1:31:03<7:11:35]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  17%|█▋        | 86/500 eps [1:32:06<7:12:16]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  17%|█▋        | 87/500 eps [1:33:09<7:12:07]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  18%|█▊        | 88/500 eps [1:34:11<7:08:20]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  18%|█▊        | 89/500 eps [1:35:14<7:08:31]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  18%|█▊        | 90/500 eps [1:36:15<7:05:27]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  18%|█▊        | 91/500 eps [1:37:18<7:05:28]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  18%|█▊        | 92/500 eps [1:38:20<7:04:29]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  19%|█▊        | 93/500 eps [1:39:23<7:02:57]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  19%|█▉        | 94/500 eps [1:40:25<7:02:07]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  19%|█▉        | 95/500 eps [1:41:28<7:02:25]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  19%|█▉        | 96/500 eps [1:42:32<7:03:58]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  19%|█▉        | 97/500 eps [1:43:33<6:59:57]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  20%|█▉        | 98/500 eps [1:44:36<6:58:29]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  20%|█▉        | 99/500 eps [1:45:37<6:54:53]simulation runner successfully reset~~~~~~~~~~~~~
+                                                         [ep 100] checkpoint saved, curve flushed
+Training:  20%|█▉        | 99/500 eps [1:46:39<6:54:53]Training:  20%|██        | 100/500 eps [1:46:39<6:53:52]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  20%|██        | 101/500 eps [1:47:42<6:54:03]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  20%|██        | 102/500 eps [1:48:44<6:52:34]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  21%|██        | 103/500 eps [1:49:45<6:50:19]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  21%|██        | 104/500 eps [1:50:48<6:50:56]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  21%|██        | 105/500 eps [1:51:51<6:50:42]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  21%|██        | 106/500 eps [1:52:55<6:52:41]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  21%|██▏       | 107/500 eps [1:53:58<6:51:44]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  22%|██▏       | 108/500 eps [1:55:00<6:49:27]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  22%|██▏       | 109/500 eps [1:56:02<6:46:36]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  22%|██▏       | 110/500 eps [1:57:04<6:44:41]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  22%|██▏       | 111/500 eps [1:58:05<6:43:03]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  22%|██▏       | 112/500 eps [1:59:08<6:42:46]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  23%|██▎       | 113/500 eps [2:00:10<6:40:51]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  23%|██▎       | 114/500 eps [2:01:12<6:40:10]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  23%|██▎       | 115/500 eps [2:02:15<6:40:08]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  23%|██▎       | 116/500 eps [2:03:17<6:39:06]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  23%|██▎       | 117/500 eps [2:04:19<6:37:13]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  24%|██▎       | 118/500 eps [2:05:22<6:37:09]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  24%|██▍       | 119/500 eps [2:06:25<6:37:48]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  24%|██▍       | 120/500 eps [2:07:28<6:37:47]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  24%|██▍       | 121/500 eps [2:08:32<6:38:18]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  24%|██▍       | 122/500 eps [2:09:34<6:35:16]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  25%|██▍       | 123/500 eps [2:10:36<6:32:34]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  25%|██▍       | 124/500 eps [2:11:39<6:32:25]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  25%|██▌       | 125/500 eps [2:12:42<6:31:54]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  25%|██▌       | 126/500 eps [2:13:44<6:30:29]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  25%|██▌       | 127/500 eps [2:14:47<6:29:07]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  26%|██▌       | 128/500 eps [2:15:49<6:27:24]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  26%|██▌       | 129/500 eps [2:16:51<6:25:58]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  26%|██▌       | 130/500 eps [2:17:54<6:24:56]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  26%|██▌       | 131/500 eps [2:18:56<6:24:19]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  26%|██▋       | 132/500 eps [2:19:58<6:22:20]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  27%|██▋       | 133/500 eps [2:21:02<6:23:25]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  27%|██▋       | 134/500 eps [2:22:04<6:21:26]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  27%|██▋       | 135/500 eps [2:23:07<6:21:28]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  27%|██▋       | 136/500 eps [2:24:10<6:19:53]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  27%|██▋       | 137/500 eps [2:25:12<6:19:04]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  28%|██▊       | 138/500 eps [2:26:14<6:16:44]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  28%|██▊       | 139/500 eps [2:27:16<6:14:21]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  28%|██▊       | 140/500 eps [2:28:19<6:15:02]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  28%|██▊       | 141/500 eps [2:29:21<6:13:46]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  28%|██▊       | 142/500 eps [2:30:24<6:12:30]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  29%|██▊       | 143/500 eps [2:31:25<6:09:50]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  29%|██▉       | 144/500 eps [2:32:28<6:10:20]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  29%|██▉       | 145/500 eps [2:33:32<6:10:53]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  29%|██▉       | 146/500 eps [2:34:34<6:09:14]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  29%|██▉       | 147/500 eps [2:35:36<6:06:42]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  30%|██▉       | 148/500 eps [2:36:38<6:05:10]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  30%|██▉       | 149/500 eps [2:37:40<6:04:21]simulation runner successfully reset~~~~~~~~~~~~~
+                                                          [ep 150] checkpoint saved, curve flushed
+Training:  30%|██▉       | 149/500 eps [2:38:43<6:04:21]Training:  30%|███       | 150/500 eps [2:38:43<6:04:18]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  30%|███       | 151/500 eps [2:39:46<6:03:59]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  30%|███       | 152/500 eps [2:40:48<6:02:52]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  31%|███       | 153/500 eps [2:41:51<6:02:12]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  31%|███       | 154/500 eps [2:42:55<6:02:49]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  31%|███       | 155/500 eps [2:43:56<5:59:35]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  31%|███       | 156/500 eps [2:44:59<5:58:14]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  31%|███▏      | 157/500 eps [2:46:01<5:56:55]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  32%|███▏      | 158/500 eps [2:47:04<5:56:09]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  32%|███▏      | 159/500 eps [2:48:06<5:54:35]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  32%|███▏      | 160/500 eps [2:49:09<5:54:17]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  32%|███▏      | 161/500 eps [2:50:11<5:52:32]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  32%|███▏      | 162/500 eps [2:51:13<5:50:37]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  33%|███▎      | 163/500 eps [2:52:16<5:50:42]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  33%|███▎      | 164/500 eps [2:53:19<5:52:02]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  33%|███▎      | 165/500 eps [2:54:22<5:49:38]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  33%|███▎      | 166/500 eps [2:55:24<5:48:30]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  33%|███▎      | 167/500 eps [2:56:27<5:47:38]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  34%|███▎      | 168/500 eps [2:57:29<5:45:04]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  34%|███▍      | 169/500 eps [2:58:31<5:44:56]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  34%|███▍      | 170/500 eps [2:59:33<5:43:06]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  34%|███▍      | 171/500 eps [3:00:35<5:40:57]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  34%|███▍      | 172/500 eps [3:01:37<5:39:08]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  35%|███▍      | 173/500 eps [3:02:41<5:41:22]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  35%|███▍      | 174/500 eps [3:03:43<5:39:18]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  35%|███▌      | 175/500 eps [3:04:44<5:36:50]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  35%|███▌      | 176/500 eps [3:05:47<5:36:01]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  35%|███▌      | 177/500 eps [3:06:50<5:36:40]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  36%|███▌      | 178/500 eps [3:07:53<5:35:42]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  36%|███▌      | 179/500 eps [3:08:55<5:34:41]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  36%|███▌      | 180/500 eps [3:09:58<5:34:01]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  36%|███▌      | 181/500 eps [3:11:01<5:33:14]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  36%|███▋      | 182/500 eps [3:12:04<5:32:19]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  37%|███▋      | 183/500 eps [3:13:07<5:32:57]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  37%|███▋      | 184/500 eps [3:14:10<5:31:01]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  37%|███▋      | 185/500 eps [3:15:14<5:31:37]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  37%|███▋      | 186/500 eps [3:16:16<5:29:54]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  37%|███▋      | 187/500 eps [3:17:19<5:27:59]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  38%|███▊      | 188/500 eps [3:18:23<5:28:02]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  38%|███▊      | 189/500 eps [3:19:25<5:26:10]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  38%|███▊      | 190/500 eps [3:20:28<5:25:37]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  38%|███▊      | 191/500 eps [3:21:32<5:25:05]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  38%|███▊      | 192/500 eps [3:22:35<5:24:11]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  39%|███▊      | 193/500 eps [3:23:38<5:22:47]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  39%|███▉      | 194/500 eps [3:24:40<5:20:25]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  39%|███▉      | 195/500 eps [3:25:43<5:19:09]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  39%|███▉      | 196/500 eps [3:26:45<5:17:05]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  39%|███▉      | 197/500 eps [3:27:48<5:16:36]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  40%|███▉      | 198/500 eps [3:28:51<5:16:10]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  40%|███▉      | 199/500 eps [3:29:54<5:15:11]simulation runner successfully reset~~~~~~~~~~~~~
+                                                          [ep 200] checkpoint saved, curve flushed
+Training:  40%|███▉      | 199/500 eps [3:30:57<5:15:11]Training:  40%|████      | 200/500 eps [3:30:57<5:14:42]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  40%|████      | 201/500 eps [3:31:59<5:12:49]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  40%|████      | 202/500 eps [3:33:03<5:13:07]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  41%|████      | 203/500 eps [3:34:06<5:11:41]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  41%|████      | 204/500 eps [3:35:09<5:11:13]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  41%|████      | 205/500 eps [3:36:12<5:09:55]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  41%|████      | 206/500 eps [3:37:14<5:07:48]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  41%|████▏     | 207/500 eps [3:38:18<5:07:12]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  42%|████▏     | 208/500 eps [3:39:20<5:05:16]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  42%|████▏     | 209/500 eps [3:40:21<5:02:34]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  42%|████▏     | 210/500 eps [3:41:25<5:02:33]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  42%|████▏     | 211/500 eps [3:42:28<5:02:43]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  42%|████▏     | 212/500 eps [3:43:31<5:02:12]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  43%|████▎     | 213/500 eps [3:44:34<5:00:36]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  43%|████▎     | 214/500 eps [3:45:36<4:58:27]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  43%|████▎     | 215/500 eps [3:46:38<4:57:25]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  43%|████▎     | 216/500 eps [3:47:42<4:57:33]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  43%|████▎     | 217/500 eps [3:48:44<4:55:17]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  44%|████▎     | 218/500 eps [3:49:46<4:53:22]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  44%|████▍     | 219/500 eps [3:50:49<4:53:45]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  44%|████▍     | 220/500 eps [3:51:51<4:51:56]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  44%|████▍     | 221/500 eps [3:52:58<4:56:42]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  44%|████▍     | 222/500 eps [3:54:01<4:54:19]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  45%|████▍     | 223/500 eps [3:55:04<4:53:03]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  45%|████▍     | 224/500 eps [3:56:07<4:50:05]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  45%|████▌     | 225/500 eps [3:57:09<4:47:50]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  45%|████▌     | 226/500 eps [3:58:12<4:47:27]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  45%|████▌     | 227/500 eps [3:59:15<4:46:36]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  46%|████▌     | 228/500 eps [4:00:18<4:44:44]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  46%|████▌     | 229/500 eps [4:01:20<4:43:55]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  46%|████▌     | 230/500 eps [4:02:25<4:44:37]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  46%|████▌     | 231/500 eps [4:03:30<4:45:59]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  46%|████▋     | 232/500 eps [4:04:33<4:44:30]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  47%|████▋     | 233/500 eps [4:05:36<4:41:56]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  47%|████▋     | 234/500 eps [4:06:39<4:41:13]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  47%|████▋     | 235/500 eps [4:07:42<4:39:47]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  47%|████▋     | 236/500 eps [4:08:46<4:38:25]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  47%|████▋     | 237/500 eps [4:09:49<4:36:58]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  48%|████▊     | 238/500 eps [4:10:50<4:34:04]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  48%|████▊     | 239/500 eps [4:11:53<4:32:12]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  48%|████▊     | 240/500 eps [4:12:57<4:33:27]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  48%|████▊     | 241/500 eps [4:14:00<4:32:50]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  48%|████▊     | 242/500 eps [4:15:03<4:31:01]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  49%|████▊     | 243/500 eps [4:16:06<4:30:08]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  49%|████▉     | 244/500 eps [4:17:09<4:28:34]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  49%|████▉     | 245/500 eps [4:18:11<4:26:55]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  49%|████▉     | 246/500 eps [4:19:14<4:25:41]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  49%|████▉     | 247/500 eps [4:20:17<4:24:42]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  50%|████▉     | 248/500 eps [4:21:20<4:23:46]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  50%|████▉     | 249/500 eps [4:22:24<4:24:15]simulation runner successfully reset~~~~~~~~~~~~~
+                                                          [ep 250] checkpoint saved, curve flushed
+Training:  50%|████▉     | 249/500 eps [4:23:27<4:24:15]Training:  50%|█████     | 250/500 eps [4:23:27<4:23:36]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  50%|█████     | 251/500 eps [4:24:31<4:23:09]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  50%|█████     | 252/500 eps [4:25:33<4:20:09]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  51%|█████     | 253/500 eps [4:26:35<4:18:28]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  51%|█████     | 254/500 eps [4:27:37<4:16:48]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  51%|█████     | 255/500 eps [4:28:41<4:16:28]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  51%|█████     | 256/500 eps [4:29:43<4:14:41]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  51%|█████▏    | 257/500 eps [4:30:46<4:13:50]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  52%|█████▏    | 258/500 eps [4:31:49<4:13:17]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  52%|█████▏    | 259/500 eps [4:32:53<4:13:59]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  52%|█████▏    | 260/500 eps [4:33:56<4:12:17]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  52%|█████▏    | 261/500 eps [4:34:58<4:11:00]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  52%|█████▏    | 262/500 eps [4:36:01<4:08:53]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  53%|█████▎    | 263/500 eps [4:37:04<4:08:42]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  53%|█████▎    | 264/500 eps [4:38:07<4:07:43]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  53%|█████▎    | 265/500 eps [4:39:11<4:07:29]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  53%|█████▎    | 266/500 eps [4:40:13<4:05:30]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  53%|█████▎    | 267/500 eps [4:41:16<4:03:45]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  54%|█████▎    | 268/500 eps [4:42:18<4:02:22]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  54%|█████▍    | 269/500 eps [4:43:21<4:02:10]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  54%|█████▍    | 270/500 eps [4:44:25<4:01:26]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  54%|█████▍    | 271/500 eps [4:45:28<4:00:39]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  54%|█████▍    | 272/500 eps [4:46:30<3:58:15]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  55%|█████▍    | 273/500 eps [4:47:32<3:57:20]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  55%|█████▍    | 274/500 eps [4:48:35<3:56:22]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  55%|█████▌    | 275/500 eps [4:49:38<3:54:58]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  55%|█████▌    | 276/500 eps [4:50:40<3:53:58]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  55%|█████▌    | 277/500 eps [4:51:43<3:52:27]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  56%|█████▌    | 278/500 eps [4:52:48<3:53:57]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  56%|█████▌    | 279/500 eps [4:53:50<3:51:53]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  56%|█████▌    | 280/500 eps [4:54:53<3:51:07]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  56%|█████▌    | 281/500 eps [4:55:56<3:49:57]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  56%|█████▋    | 282/500 eps [4:56:58<3:48:09]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  57%|█████▋    | 283/500 eps [4:58:01<3:46:36]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  57%|█████▋    | 284/500 eps [4:59:04<3:46:11]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  57%|█████▋    | 285/500 eps [5:00:07<3:45:03]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  57%|█████▋    | 286/500 eps [5:01:10<3:44:14]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  57%|█████▋    | 287/500 eps [5:02:12<3:42:40]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  58%|█████▊    | 288/500 eps [5:03:15<3:42:14]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  58%|█████▊    | 289/500 eps [5:04:18<3:40:54]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  58%|█████▊    | 290/500 eps [5:05:21<3:39:53]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  58%|█████▊    | 291/500 eps [5:06:24<3:39:07]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  58%|█████▊    | 292/500 eps [5:07:28<3:39:04]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  59%|█████▊    | 293/500 eps [5:08:31<3:37:35]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  59%|█████▉    | 294/500 eps [5:09:33<3:35:54]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  59%|█████▉    | 295/500 eps [5:10:35<3:34:21]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  59%|█████▉    | 296/500 eps [5:11:37<3:32:21]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  59%|█████▉    | 297/500 eps [5:12:40<3:31:57]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  60%|█████▉    | 298/500 eps [5:13:44<3:32:01]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  60%|█████▉    | 299/500 eps [5:14:47<3:30:42]simulation runner successfully reset~~~~~~~~~~~~~
+                                                          [ep 300] checkpoint saved, curve flushed
+Training:  60%|█████▉    | 299/500 eps [5:15:49<3:30:42]Training:  60%|██████    | 300/500 eps [5:15:49<3:29:19]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  60%|██████    | 301/500 eps [5:16:52<3:28:12]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  60%|██████    | 302/500 eps [5:17:55<3:27:27]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  61%|██████    | 303/500 eps [5:18:58<3:26:38]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  61%|██████    | 304/500 eps [5:20:01<3:25:27]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  61%|██████    | 305/500 eps [5:21:04<3:24:31]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  61%|██████    | 306/500 eps [5:22:08<3:24:36]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  61%|██████▏   | 307/500 eps [5:23:13<3:25:13]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  62%|██████▏   | 308/500 eps [5:24:16<3:23:04]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  62%|██████▏   | 309/500 eps [5:25:19<3:21:27]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  62%|██████▏   | 310/500 eps [5:26:21<3:19:39]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  62%|██████▏   | 311/500 eps [5:27:24<3:18:40]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  62%|██████▏   | 312/500 eps [5:28:28<3:17:51]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  63%|██████▎   | 313/500 eps [5:29:31<3:16:48]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  63%|██████▎   | 314/500 eps [5:30:34<3:16:06]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  63%|██████▎   | 315/500 eps [5:31:37<3:14:21]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  63%|██████▎   | 316/500 eps [5:32:41<3:14:31]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  63%|██████▎   | 317/500 eps [5:33:44<3:13:17]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  64%|██████▎   | 318/500 eps [5:34:48<3:12:16]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  64%|██████▍   | 319/500 eps [5:35:51<3:10:57]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  64%|██████▍   | 320/500 eps [5:36:55<3:10:14]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  64%|██████▍   | 321/500 eps [5:37:58<3:09:37]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  64%|██████▍   | 322/500 eps [5:39:00<3:07:02]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  65%|██████▍   | 323/500 eps [5:40:04<3:06:23]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  65%|██████▍   | 324/500 eps [5:41:06<3:04:51]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  65%|██████▌   | 325/500 eps [5:42:11<3:05:04]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  65%|██████▌   | 326/500 eps [5:43:15<3:04:23]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  65%|██████▌   | 327/500 eps [5:44:18<3:02:45]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  66%|██████▌   | 328/500 eps [5:45:21<3:01:39]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  66%|██████▌   | 329/500 eps [5:46:24<3:00:07]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  66%|██████▌   | 330/500 eps [5:47:26<2:58:28]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  66%|██████▌   | 331/500 eps [5:48:30<2:57:56]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  66%|██████▋   | 332/500 eps [5:49:34<2:57:16]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  67%|██████▋   | 333/500 eps [5:50:37<2:56:12]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  67%|██████▋   | 334/500 eps [5:51:40<2:54:50]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  67%|██████▋   | 335/500 eps [5:52:45<2:55:19]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  67%|██████▋   | 336/500 eps [5:53:49<2:54:14]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  67%|██████▋   | 337/500 eps [5:54:52<2:52:46]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  68%|██████▊   | 338/500 eps [5:55:55<2:50:58]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  68%|██████▊   | 339/500 eps [5:56:58<2:49:50]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  68%|██████▊   | 340/500 eps [5:58:01<2:48:35]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  68%|██████▊   | 341/500 eps [5:59:05<2:48:28]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  68%|██████▊   | 342/500 eps [6:00:08<2:47:06]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  69%|██████▊   | 343/500 eps [6:01:12<2:46:22]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  69%|██████▉   | 344/500 eps [6:02:14<2:44:00]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  69%|██████▉   | 345/500 eps [6:03:18<2:43:32]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  69%|██████▉   | 346/500 eps [6:04:21<2:41:49]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  69%|██████▉   | 347/500 eps [6:05:24<2:40:51]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  70%|██████▉   | 348/500 eps [6:06:26<2:39:36]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  70%|██████▉   | 349/500 eps [6:07:30<2:38:38]simulation runner successfully reset~~~~~~~~~~~~~
+                                                          [ep 350] checkpoint saved, curve flushed
+Training:  70%|██████▉   | 349/500 eps [6:08:33<2:38:38]Training:  70%|███████   | 350/500 eps [6:08:33<2:37:32]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  70%|███████   | 351/500 eps [6:09:36<2:37:03]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  70%|███████   | 352/500 eps [6:10:40<2:36:04]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  71%|███████   | 353/500 eps [6:11:43<2:34:48]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  71%|███████   | 354/500 eps [6:12:47<2:34:47]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  71%|███████   | 355/500 eps [6:13:50<2:33:21]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  71%|███████   | 356/500 eps [6:14:53<2:31:26]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  71%|███████▏  | 357/500 eps [6:15:56<2:30:14]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  72%|███████▏  | 358/500 eps [6:16:59<2:29:19]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  72%|███████▏  | 359/500 eps [6:18:02<2:28:07]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  72%|███████▏  | 360/500 eps [6:19:05<2:27:36]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  72%|███████▏  | 361/500 eps [6:20:09<2:26:57]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  72%|███████▏  | 362/500 eps [6:21:13<2:25:45]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  73%|███████▎  | 363/500 eps [6:22:16<2:24:59]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  73%|███████▎  | 364/500 eps [6:23:20<2:24:11]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  73%|███████▎  | 365/500 eps [6:24:23<2:22:31]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  73%|███████▎  | 366/500 eps [6:25:27<2:22:08]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  73%|███████▎  | 367/500 eps [6:26:30<2:20:29]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  74%|███████▎  | 368/500 eps [6:27:33<2:19:24]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  74%|███████▍  | 369/500 eps [6:28:36<2:17:47]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  74%|███████▍  | 370/500 eps [6:29:39<2:16:50]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  74%|███████▍  | 371/500 eps [6:30:41<2:15:15]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  74%|███████▍  | 372/500 eps [6:31:45<2:14:25]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  75%|███████▍  | 373/500 eps [6:32:49<2:14:05]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  75%|███████▍  | 374/500 eps [6:33:52<2:13:08]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  75%|███████▌  | 375/500 eps [6:34:55<2:11:45]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  75%|███████▌  | 376/500 eps [6:35:58<2:10:11]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  75%|███████▌  | 377/500 eps [6:37:01<2:09:25]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  76%|███████▌  | 378/500 eps [6:38:04<2:08:23]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  76%|███████▌  | 379/500 eps [6:39:08<2:07:32]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  76%|███████▌  | 380/500 eps [6:40:12<2:07:00]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  76%|███████▌  | 381/500 eps [6:41:15<2:05:48]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  76%|███████▋  | 382/500 eps [6:42:19<2:04:57]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  77%|███████▋  | 383/500 eps [6:43:22<2:03:54]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  77%|███████▋  | 384/500 eps [6:44:26<2:02:33]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  77%|███████▋  | 385/500 eps [6:45:28<2:01:05]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  77%|███████▋  | 386/500 eps [6:46:32<2:00:10]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  77%|███████▋  | 387/500 eps [6:47:35<1:59:07]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  78%|███████▊  | 388/500 eps [6:48:39<1:58:18]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  78%|███████▊  | 389/500 eps [6:49:42<1:57:05]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  78%|███████▊  | 390/500 eps [6:50:45<1:55:55]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  78%|███████▊  | 391/500 eps [6:51:48<1:54:52]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  78%|███████▊  | 392/500 eps [6:52:52<1:54:06]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  79%|███████▊  | 393/500 eps [6:53:55<1:53:01]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  79%|███████▉  | 394/500 eps [6:54:58<1:51:54]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  79%|███████▉  | 395/500 eps [6:56:00<1:50:08]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  79%|███████▉  | 396/500 eps [6:57:03<1:49:01]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  79%|███████▉  | 397/500 eps [6:58:06<1:48:07]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  80%|███████▉  | 398/500 eps [6:59:11<1:47:42]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  80%|███████▉  | 399/500 eps [7:00:14<1:46:41]simulation runner successfully reset~~~~~~~~~~~~~
+                                                          [ep 400] checkpoint saved, curve flushed
+Training:  80%|███████▉  | 399/500 eps [7:01:20<1:46:41]Training:  80%|████████  | 400/500 eps [7:01:20<1:47:10]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  80%|████████  | 401/500 eps [7:02:25<1:46:27]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  80%|████████  | 402/500 eps [7:03:29<1:44:46]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  81%|████████  | 403/500 eps [7:04:31<1:42:50]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  81%|████████  | 404/500 eps [7:05:34<1:41:38]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  81%|████████  | 405/500 eps [7:06:38<1:40:36]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  81%|████████  | 406/500 eps [7:07:41<1:39:25]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  81%|████████▏ | 407/500 eps [7:08:44<1:38:02]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  82%|████████▏ | 408/500 eps [7:09:47<1:37:02]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  82%|████████▏ | 409/500 eps [7:10:51<1:36:15]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  82%|████████▏ | 410/500 eps [7:11:55<1:35:18]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  82%|████████▏ | 411/500 eps [7:12:59<1:34:31]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  82%|████████▏ | 412/500 eps [7:14:03<1:33:21]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  83%|████████▎ | 413/500 eps [7:15:06<1:32:19]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  83%|████████▎ | 414/500 eps [7:16:09<1:30:46]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  83%|████████▎ | 415/500 eps [7:17:11<1:29:13]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  83%|████████▎ | 416/500 eps [7:18:14<1:28:00]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  83%|████████▎ | 417/500 eps [7:19:17<1:26:57]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  84%|████████▎ | 418/500 eps [7:20:19<1:25:49]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  84%|████████▍ | 419/500 eps [7:21:22<1:24:47]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  84%|████████▍ | 420/500 eps [7:22:26<1:24:20]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  84%|████████▍ | 421/500 eps [7:23:31<1:23:40]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  84%|████████▍ | 422/500 eps [7:24:33<1:22:13]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  85%|████████▍ | 423/500 eps [7:25:37<1:21:22]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  85%|████████▍ | 424/500 eps [7:26:40<1:20:08]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  85%|████████▌ | 425/500 eps [7:27:44<1:19:21]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  85%|████████▌ | 426/500 eps [7:28:47<1:18:19]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  85%|████████▌ | 427/500 eps [7:29:50<1:16:53]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  86%|████████▌ | 428/500 eps [7:30:53<1:15:58]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  86%|████████▌ | 429/500 eps [7:31:57<1:15:02]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  86%|████████▌ | 430/500 eps [7:33:01<1:14:15]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  86%|████████▌ | 431/500 eps [7:34:05<1:13:13]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  86%|████████▋ | 432/500 eps [7:35:09<1:12:08]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  87%|████████▋ | 433/500 eps [7:36:12<1:10:55]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  87%|████████▋ | 434/500 eps [7:37:17<1:10:15]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  87%|████████▋ | 435/500 eps [7:38:20<1:08:58]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  87%|████████▋ | 436/500 eps [7:39:24<1:07:58]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  87%|████████▋ | 437/500 eps [7:40:28<1:07:08]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  88%|████████▊ | 438/500 eps [7:41:31<1:05:45]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  88%|████████▊ | 439/500 eps [7:42:36<1:05:01]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  88%|████████▊ | 440/500 eps [7:43:39<1:03:53]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  88%|████████▊ | 441/500 eps [7:44:43<1:02:35]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  88%|████████▊ | 442/500 eps [7:45:46<1:01:32]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  89%|████████▊ | 443/500 eps [7:46:51<1:00:41]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  89%|████████▉ | 444/500 eps [7:47:54<59:27]  simulation runner successfully reset~~~~~~~~~~~~~
+Training:  89%|████████▉ | 445/500 eps [7:48:57<58:15]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  89%|████████▉ | 446/500 eps [7:50:00<57:04]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  89%|████████▉ | 447/500 eps [7:51:04<56:02]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  90%|████████▉ | 448/500 eps [7:52:08<55:08]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  90%|████████▉ | 449/500 eps [7:53:13<54:28]simulation runner successfully reset~~~~~~~~~~~~~
+                                                        [ep 450] checkpoint saved, curve flushed
+Training:  90%|████████▉ | 449/500 eps [7:54:16<54:28]Training:  90%|█████████ | 450/500 eps [7:54:16<53:15]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  90%|█████████ | 451/500 eps [7:55:21<52:20]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  90%|█████████ | 452/500 eps [7:56:25<51:12]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  91%|█████████ | 453/500 eps [7:57:28<50:03]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  91%|█████████ | 454/500 eps [7:58:33<49:12]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  91%|█████████ | 455/500 eps [7:59:37<48:05]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  91%|█████████ | 456/500 eps [8:00:40<46:38]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  91%|█████████▏| 457/500 eps [8:01:43<45:32]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  92%|█████████▏| 458/500 eps [8:02:46<44:24]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  92%|█████████▏| 459/500 eps [8:03:50<43:24]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  92%|█████████▏| 460/500 eps [8:04:53<42:17]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  92%|█████████▏| 461/500 eps [8:05:56<41:09]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  92%|█████████▏| 462/500 eps [8:07:00<40:14]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  93%|█████████▎| 463/500 eps [8:08:04<39:11]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  93%|█████████▎| 464/500 eps [8:09:07<38:00]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  93%|█████████▎| 465/500 eps [8:10:11<37:02]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  93%|█████████▎| 466/500 eps [8:11:14<35:57]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  93%|█████████▎| 467/500 eps [8:12:18<35:02]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  94%|█████████▎| 468/500 eps [8:13:22<34:03]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  94%|█████████▍| 469/500 eps [8:14:26<32:55]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  94%|█████████▍| 470/500 eps [8:15:29<31:43]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  94%|█████████▍| 471/500 eps [8:16:32<30:39]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  94%|█████████▍| 472/500 eps [8:17:36<29:41]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  95%|█████████▍| 473/500 eps [8:18:40<28:35]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  95%|█████████▍| 474/500 eps [8:19:43<27:29]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  95%|█████████▌| 475/500 eps [8:20:46<26:22]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  95%|█████████▌| 476/500 eps [8:21:49<25:22]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  95%|█████████▌| 477/500 eps [8:22:53<24:22]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  96%|█████████▌| 478/500 eps [8:23:58<23:26]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  96%|█████████▌| 479/500 eps [8:25:00<22:10]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  96%|█████████▌| 480/500 eps [8:26:04<21:11]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  96%|█████████▌| 481/500 eps [8:27:08<20:06]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  96%|█████████▋| 482/500 eps [8:28:10<18:58]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  97%|█████████▋| 483/500 eps [8:29:13<17:50]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  97%|█████████▋| 484/500 eps [8:30:16<16:48]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  97%|█████████▋| 485/500 eps [8:31:19<15:44]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  97%|█████████▋| 486/500 eps [8:32:21<14:40]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  97%|█████████▋| 487/500 eps [8:33:26<13:43]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  98%|█████████▊| 488/500 eps [8:34:29<12:38]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  98%|█████████▊| 489/500 eps [8:35:32<11:35]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  98%|█████████▊| 490/500 eps [8:36:35<10:32]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  98%|█████████▊| 491/500 eps [8:37:38<09:27]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  98%|█████████▊| 492/500 eps [8:38:41<08:24]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  99%|█████████▊| 493/500 eps [8:39:44<07:22]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  99%|█████████▉| 494/500 eps [8:40:48<06:20]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  99%|█████████▉| 495/500 eps [8:41:52<05:17]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  99%|█████████▉| 496/500 eps [8:42:55<04:13]simulation runner successfully reset~~~~~~~~~~~~~
+Training:  99%|█████████▉| 497/500 eps [8:43:59<03:10]simulation runner successfully reset~~~~~~~~~~~~~
+Training: 100%|█████████▉| 498/500 eps [8:45:01<02:06]simulation runner successfully reset~~~~~~~~~~~~~
+Training: 100%|█████████▉| 499/500 eps [8:46:05<01:03]simulation runner successfully reset~~~~~~~~~~~~~
+                                                        [ep 500] checkpoint saved, curve flushed
+Training: 100%|█████████▉| 499/500 eps [8:47:07<01:03]Training: 100%|██████████| 500/500 eps [8:47:07<00:00]Training: 100%|██████████| 500/500 eps [8:47:07<00:00]
+  checkpoint saved → r5_test_results/checkpoint
+  training curve → r5_test_results/training_curve.csv
+  training curve plot → r5_test_results/training_curve.png
+
+=== EVALUATION (10 episodes) ===
+Evaluating:   0%|          | 0/10 seeds [00:00<?]  seed=42 DS1: 300 rows → r5_test_results/episode_42_DS1_r5log.csv
+Evaluating:  10%|█         | 1/10 seeds [00:52<07:50]  seed=123 DS1: 300 rows → r5_test_results/episode_123_DS1_r5log.csv
+Evaluating:  20%|██        | 2/10 seeds [01:45<07:02]  seed=256 DS1: 300 rows → r5_test_results/episode_256_DS1_r5log.csv
+Evaluating:  30%|███       | 3/10 seeds [02:39<06:12]  seed=789 DS1: 300 rows → r5_test_results/episode_789_DS1_r5log.csv
+Evaluating:  40%|████      | 4/10 seeds [03:34<05:24]  seed=1024 DS1: 300 rows → r5_test_results/episode_1024_DS1_r5log.csv
+Evaluating:  50%|█████     | 5/10 seeds [04:29<04:32]  seed=1337 DS1: 300 rows → r5_test_results/episode_1337_DS1_r5log.csv
+Evaluating:  60%|██████    | 6/10 seeds [05:25<03:40]  seed=2048 DS1: 300 rows → r5_test_results/episode_2048_DS1_r5log.csv
+Evaluating:  70%|███████   | 7/10 seeds [06:20<02:45]  seed=4096 DS1: 300 rows → r5_test_results/episode_4096_DS1_r5log.csv
+Evaluating:  80%|████████  | 8/10 seeds [07:15<01:49]  seed=8192 DS1: 300 rows → r5_test_results/episode_8192_DS1_r5log.csv
+Evaluating:  90%|█████████ | 9/10 seeds [08:11<00:55]  seed=16384 DS1: 300 rows → r5_test_results/episode_16384_DS1_r5log.csv
+Evaluating: 100%|██████████| 10/10 seeds [09:06<00:00]Evaluating: 100%|██████████| 10/10 seeds [09:06<00:00]
+
+=== STATISTICS ===
+  statistics saved → r5_test_results/r5_statistics.csv
+  findings saved → r5_test_results/r5_findings.md
+
+=== GENERATING PLOTS ===
+  plot saved → r5_test_results/r5_diagnostic.png
+  plot saved → r5_test_results/r5_diagnostic.pdf
+
+  [sanity] mean DS backlog pre=5279.7, during=7967.6
+  [OK] Backlog rose during disruption — disruption fired.
+  dead-zone plot → r5_test_results/r5_deadzone.png
+  dead-zone plot → r5_test_results/r5_deadzone.pdf
+  reward-components plot → r5_test_results/reward_components.png
+  reward-components plot → r5_test_results/reward_components.pdf
+
+=== GENERATING REWARD-INPUT PLOTS ===
+Loaded 3000 rows from 10 CSVs
+Saved: r5_test_results/r1_inputs.png
+Saved: r5_test_results/r1_inputs.pdf
+Saved: r5_test_results/r2_inputs.png
+Saved: r5_test_results/r2_inputs.pdf
+Saved: r5_test_results/r3_inputs.png
+Saved: r5_test_results/r3_inputs.pdf
+Saved: r5_test_results/r4_inputs.png
+Saved: r5_test_results/r4_inputs.pdf
+Saved: r5_test_results/r6_inputs.png
+Saved: r5_test_results/r6_inputs.pdf
+
+Done. r5 inputs already covered by r5_diagnostic.png panels 1+2.
+
+Done. All outputs in: /mnt/c/Users/aidan/Downloads/Inventory_DRL_MAB-main-20260508T223316Z-3-001/Inventory_DRL_MAB-main/r5_test_results/

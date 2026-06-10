@@ -1,0 +1,23 @@
+=== FIXED-REWARD ANALYSIS SUMMARY ===
+
+Per-component (FIXED):
+  r1: std=0.746 nuniq=8 [-3.00,0.50] pre=-0.19 during=-1.32 post=-0.42  VARIES
+  r2: std=0.750 nuniq=3 [-1.00,1.00] pre=-0.34 during=-0.95 post=-0.71  VARIES
+  r3: std=0.416 nuniq=3 [-1.00,1.00] pre=-1.00 during=-1.00 post=-0.80  VARIES
+  r4: std=1.067 nuniq=5 [-3.00,1.00] pre=-2.02 during=-1.38 post=-1.73  VARIES
+  r5: std=0.699 nuniq=3 [-1.00,1.00] pre=-0.95 during=-0.85 post=-0.50  VARIES
+  r6: std=0.801 nuniq=3 [-1.00,1.00] pre=-0.18 during=-0.93 post=-0.33  VARIES
+
+Backlog (pre-disruption is the fair, symmetric comparison):
+  FIXED  DS1 pre=190 during=1817 post=441
+  FIXED  DS2 pre=0  (base-stock reference)
+  BASE   DS1 pre=5280 post=11355  (broken rewards)
+
+Correlation matrix (FIXED):
+      r1    r2    r3    r4    r5    r6
+r1  1.00  0.13 -0.07 -0.30  0.21  0.20
+r2  0.13  1.00 -0.11 -0.11 -0.13  0.07
+r3 -0.07 -0.11  1.00  0.42 -0.08 -0.19
+r4 -0.30 -0.11  0.42  1.00 -0.04 -0.06
+r5  0.21 -0.13 -0.08 -0.04  1.00  0.15
+r6  0.20  0.07 -0.19 -0.06  0.15  1.00

@@ -1,0 +1,181 @@
+{
+  "AGENT_CYCLE_SERVICE_LEVEL": 0.9,
+  "AGENT_DEFAULT_UP_TO_LEVEL": 120,
+  "AGENT_FIXED_ORDER_UP_TO_LEVEL": false,
+  "AGENT_HISTORY_PRESERVE_TIME": 60,
+  "AGENT_LEAD_TIME": 2,
+  "AGENT_REVIEW_TIME": 0,
+  "BACKLOG_COST": 10.0,
+  "DEMAND_PREDICTOR_TYPE": "MovingAverage",
+  "DISRUPTIONS": [
+    {
+      "decrease_factor_1": 0.95,
+      "decrease_factor_2": 0,
+      "end_day_1": 157,
+      "end_day_2": -1,
+      "happen_day_1": 110,
+      "happen_day_2": -1,
+      "manufacturer_index": 0,
+      "num_active_lines": 40,
+      "type": "LineShutDown"
+    }
+  ],
+  "DRL_ACTION_BOUND": 1.0,
+  "DRL_ACTION_LOWER_BOUND": 0.0,
+  "DRL_ACTOR_FC_LAYERS": 2,
+  "DRL_ACTOR_LR": 0.01,
+  "DRL_ALLOC_HI": 1.0,
+  "DRL_ALLOC_LO": 0.0,
+  "DRL_BACKLOG_PENALTY_THRESH": 60,
+  "DRL_BETA_ALPHA": 0.05,
+  "DRL_BETA_EPSILON": 0.005,
+  "DRL_CRITIC_FC_LAYERS": 3,
+  "DRL_CRITIC_LR": 0.01,
+  "DRL_DROPOUT": 0.3,
+  "DRL_ENTROPY_COEFF": 0.01,
+  "DRL_EQ1_PROXY_SCALE": 3500.0,
+  "DRL_EQ1_PROXY_WEIGHT": 0.0,
+  "DRL_EXPLORATION_DECAY": 0.998,
+  "DRL_GAMMA": 0.95,
+  "DRL_GRADIENT_CLIP": 1.0,
+  "DRL_GRU_LR_FACTOR": 0.3,
+  "DRL_HIDDEN_SIZE": 128,
+  "DRL_HISTORY_SIZE": 8,
+  "DRL_INITIAL_EXPLORATION": 1.0,
+  "DRL_INVENTORY_TARGET": 120,
+  "DRL_LAYER_TYPE": "GRU",
+  "DRL_MAX_EXPLORATION": 2.0,
+  "DRL_MAX_LR": 0.005,
+  "DRL_MAX_UPDATE_FREQ_CYCLES": 10,
+  "DRL_MAX_UPDATE_FREQ_EPISODES": 2,
+  "DRL_MIN_EXPLORATION": 0.1,
+  "DRL_MIN_LR": 0.0001,
+  "DRL_ORDER_HI": 240,
+  "DRL_ORDER_LO": 0,
+  "DRL_PMT_LOWER": 0.5,
+  "DRL_PMT_UPPER": 1.5,
+  "DRL_R3_BAND_FRAC": 0.25,
+  "DRL_REWARD_EPSILON": 50.0,
+  "DRL_REWARD_EPSILON_FRAC": 0.1,
+  "DRL_REWARD_FIX": false,
+  "DRL_STD_BOUND": [
+    0.01,
+    1.0
+  ],
+  "DRL_TRAINING_NUM": 1,
+  "DRL_VERBOSE_TRAINING": false,
+  "DRL_WARMUP_STEPS": 10,
+  "DS_HC_LINKS": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      1,
+      1
+    ]
+  ],
+  "DS_STATE_METRICS": [
+    "Backlog",
+    "Inventory-Level",
+    "Order",
+    "Delivery",
+    "Inventory",
+    "On-Order",
+    "Demand",
+    "Lead-time",
+    "Up-to-level"
+  ],
+  "EVAL_TRAIN_EPISODES": 45,
+  "HC_ALL_METRICS": [
+    "Inventory",
+    "Demand",
+    "Loss",
+    "Backlog",
+    "Order",
+    "Up-to-level",
+    "Lead-time",
+    "On-Order"
+  ],
+  "HC_ORDER_SPLIT": [
+    "bytrust",
+    "equally"
+  ],
+  "HC_STATE_METRICS": [
+    "Loss",
+    "Backlog"
+  ],
+  "HC_TRUST_DELTA": 0.1,
+  "INFO_LEAD_TIME": 0,
+  "INFO_SHARING_SCENARIO": "full",
+  "INVENTORY_HOLDING_COST": 1.0,
+  "MAB_DECAY_FACTOR": 0.5,
+  "MAB_REWARD_ARMS": [
+    [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ]
+  ],
+  "MAB_THRESHOLD": 5.0,
+  "MAB_WINDOW_SIZE": 8,
+  "MN_ALL_METRICS": [
+    "Inventory",
+    "Backlog",
+    "In production",
+    "Up-to-level",
+    "Demand",
+    "Lead-time"
+  ],
+  "MN_DEFAULT_UP_TO_LEVEL": 120,
+  "MN_DS_LINKS": [
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      1
+    ]
+  ],
+  "MN_LINE_CAPACITY": 10,
+  "MN_NUM_ACTIVE_LINES": 40,
+  "MN_NUM_LINES": 40,
+  "MN_PRODUCTION_LEAD_TIME": 2,
+  "MN_STATE_METRICS": [
+    "In production",
+    "Demand"
+  ],
+  "N_DS": 2,
+  "N_HC": 2,
+  "N_MN": 2,
+  "PATIENT_MODEL_TYPE": "constant",
+  "PATIENT_NON_URGENT": 120,
+  "PATIENT_NORMAL_NON_URGENT_MEAN": 120,
+  "PATIENT_NORMAL_NON_URGENT_STDEV": 5,
+  "PATIENT_NORMAL_URGENT_MEAN": 0,
+  "PATIENT_NORMAL_URGENT_STDEV": 0,
+  "PATIENT_URGENT": 0,
+  "PHYSICAL_LEAD_TIME": 2,
+  "PROFIT_PER_UNIT": 10.0,
+  "RANDOM_SEED": 42,
+  "REWARD_NUM_COMPONENTS": 6,
+  "STUDY_NAME": "study_config",
+  "TOTAL_EPISODES": 500,
+  "TOTAL_PERIODS": 300,
+  "TRANSFER_CHECKPOINT_DIR": null,
+  "TRANSFER_FINETUNE_LR_FACTOR": 0.1,
+  "TRANSFER_FREEZE_CRITIC": false,
+  "WARMUP_PERIODS": 60
+}
