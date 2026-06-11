@@ -68,3 +68,47 @@ There is no lint/format config; match surrounding style.
 ## Further documentation
 
 See `documentation/` for deep dives: `architecture.md`, `configuration.md`, `drl-and-reward.md`, `studies.md`, `simulator.md`, and `plotting-and-diagnostics.md`.
+
+## Experiment campaigns (2026) — where the evidence lives
+
+A series of deterministic policy studies was run on this simulator (no RL). **Do not treat
+their findings as settled facts — treat them as claims with evidence, and check status
+before citing:** the index is the one-page scorecard in
+`consolidated_report/consolidated_findings.pdf` (claims with established/corrected/open/
+retracted status codes and a superseded-claims do-not-cite list). Per-claim evidence:
+hypothesis cards in `value_decomposition_study/hypotheses/H1–H10.md` (each with method,
+numbers, and verdict), `value_decomposition_study/LEDGER.md` (everything tried/kept/
+discarded with reasons), `STATUS.md` (chronology incl. discarded batches), and raw
+per-period CSVs under each study's `results/` (local, gitignored). Earlier campaigns
+(`routing_study/`, `understanding_study/`, the reward-audit reports) are archived audit
+trail — several of their headline numbers were later superseded.
+
+**Harness conventions these studies established (reuse, don't reinvent):**
+- Runner/policies: `routing_study/run_ladder.py` (build/run/log; `hc_factory`/`ds_factory`
+  injection, `post_build` wiring), `value_decomposition_study/run_vds.py` (named policies,
+  regimes incl. saturated/recurring/none), `gates_vds.py` (verification gates).
+- Gates before any reported number: bit-exact baseline reproduction (library AND CLI
+  paths — CLI argparse defaults once silently contaminated a whole screen), determinism,
+  demand conservation, cross-seed variance.
+- Seed discipline: tuning seeds 1–10 (any parameter choice), reporting seeds 11–30 (all
+  reported numbers), never mixed. Dual cost accounting (full vs excluding MN-backlog
+  bookkeeping) on cost claims.
+
+### Simulator facts found during the studies (code-level, verified — affect ANY experiment)
+
+- `NormalDistPatientModel.__init__` calls `np.random.seed(0)` (`simulator/patient_model.py`),
+  defeating `set_global_seeds` — re-seed AFTER constructing the sim or all "multi-seed"
+  normal-demand runs are one demand path (study runners do this; gate 6 guards it).
+- `config.HC_TRUST_DELTA` is dead — the trust EMA delta is hard-coded at
+  `simulator/agent.py` (`HealthCenter.reset`, 0.1). Set `hc.delta` on the agent instead.
+- Order decisions with amount ≤ 1 are silently dropped (`simulation_runner.py`,
+  `apply_order_decision`) — tiny "probe" orders deadlock policies that bootstrap from
+  observed deliveries.
+- HC/DS `on_order` entries never time out; deliveries that exceed the on-order ledger
+  raise in `receive_delivery` — never delete on-order entries, use accounting-only
+  adjustments.
+- `SimulationRunner.next_cycle` increments `now` FIRST — after the k-th call the cycle
+  just processed time k; read history at `sim.now`, not the loop index.
+- Manufacturer production responds to orders up to `num_active_lines × line_capacity`
+  (400/period at defaults): orders are the production signal; agent history older than
+  `AGENT_HISTORY_PRESERVE_TIME` (60) is purged, so collect metrics inside the period loop.
