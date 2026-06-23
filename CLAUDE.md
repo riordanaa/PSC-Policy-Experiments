@@ -83,6 +83,26 @@ per-period CSVs under each study's `results/` (local, gitignored). Earlier campa
 (`routing_study/`, `understanding_study/`, the reward-audit reports) are archived audit
 trail — several of their headline numbers were later superseded.
 
+**Latest (June 2026): the robustness reports** (advisor-facing, in `value_decomposition_study/report/`;
+treat findings as evidence-backed claims, re-verify load-bearing numbers):
+- **`robustness_report.pdf` — the rerouting/shed robustness study (the key recent report).**
+  Stress-tests the two headline findings — rerouting fixes most of the disruption; the disrupted
+  distributor DS1 benefits from "shed" (deprioritizing the trust hospital HC1 so it reroutes to
+  the healthy chain) — against healthy-chain (MN2) capacity, trust-sensitivity δ, and precise
+  recovery-metric definitions. Headline: shed is a *capacity-conditional misaligned incentive* —
+  it helps DS1 (backlog avoidance; the customer returns) but at scarce MN2 capacity becomes a
+  system disaster that also harms the rerouting hospital (the rerouted load is amplified on the
+  healthy chain, not relocated). Harness: `exp_robustness.py` (gated bit-exact), plus
+  `analyze_robustness.py`, `make_robustness_figures.py`; `MEETING_NOTE.md` is the markdown twin,
+  `robustness_prereg.md` the pre-registration.
+- **`lead_time_severity_report.pdf`** — sweeps lead time and disruption severity over the same
+  capacity grid. In a base-stock world longer lead time does NOT worsen cost (the order-up-to
+  buffer auto-scales and absorbs the shock; the collapse even mildens), but lost patients jump
+  ~2.5× past lead time ~5; the shed/flip phenomenon is *gated by severity* (inert below ~65–80%
+  cut, activating at 80%). Harness: `exp_leadtime.py`, `analyze_leadtime.py`.
+Both gate on bit-exact reproduction of the prior capacity sweep before any number is reported.
+Cross-chat findings summary: `r5_test_results/memory/robustness-leadtime-2026-06.md`.
+
 **Harness conventions these studies established (reuse, don't reinvent):**
 - Runner/policies: `routing_study/run_ladder.py` (build/run/log; `hc_factory`/`ds_factory`
   injection, `post_build` wiring), `value_decomposition_study/run_vds.py` (named policies,

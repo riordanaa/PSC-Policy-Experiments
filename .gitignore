@@ -28,3 +28,7 @@ run_all.log
 .claude/
 r5_test_results/memory/
 
+# LaTeX build intermediates and lock-workaround report duplicates
+**/report/_build/
+*_latest.pdf
+
