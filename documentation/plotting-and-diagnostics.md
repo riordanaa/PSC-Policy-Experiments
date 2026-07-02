@@ -33,8 +33,8 @@ Phase boundaries used in these plots match the default disruption: warmup ends 6
 ## Committed result directories (data, not code)
 
 - `r5_test_results/` and `r5_test_results_dense_partial_05/` — full diagnostic outputs: per-episode CSVs, checkpoints at `ep50…ep500`, training curves, and all the figures above. Treat as experiment artifacts.
-- `training_1_<seed>/` — saved actor/critic weights from training runs (`DS 1`, `DS 2`).
-- `r5_test_results_training.log` — a captured training log.
+- `training_1_<seed>/` — saved actor/critic weights from training runs (`DS 1`, `DS 2`). New runs create these at the repo root; the historical May-2026 ones live in `archive/training_runs/` (local-only, untracked).
+- `archive/r5_test_results_training.log` — a captured training log (moved from the root).
 
 Note `.gitignore` excludes `*.csv`, `*.h5`, `*.weights.h5`, `*.xlsx`, and various result/checkpoint paths — so freshly generated outputs are normally untracked. The committed directories above are intentional snapshots of past runs.
 

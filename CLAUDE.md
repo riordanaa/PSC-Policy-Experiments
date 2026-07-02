@@ -59,7 +59,8 @@ There is no lint/format config; match surrounding style.
 
 - **Duplicate/legacy modules exist.** `simulator/disruption.py` (used) vs `simulator/distruption.py` (misspelled legacy); `simulator/lead_time_estimator_new.py` (imported) vs `lead_time_estimator.py`; `psychsim_decision_maker.py` is unused. Check imports before assuming a file is live — prefer the one actually imported in `decision_maker.py` / `drl_simulation_profile_config.py`.
 - **`sys.path` hacking is the norm.** Test/script files insert the repo root and `Test/` onto `sys.path` so `import config` and `from sim_test_config import ...` resolve. Keep the same pattern when adding scripts; running from the wrong directory breaks imports.
-- Checkpoints (`*.weights.h5`, `*_normalizer.npz`, `training_state.json`) and result CSVs are gitignored. The `r5_test_results*/`, `training_1_*/` dirs are committed experiment outputs/diagnostics — treat as data, not code.
+- Checkpoints (`*.weights.h5`, `*_normalizer.npz`, `training_state.json`) and result CSVs are gitignored. The `r5_test_results*/` dirs are committed experiment outputs/diagnostics — treat as data, not code. Historical `training_1_<pid>/` checkpoint dirs (never tracked) were moved to `archive/training_runs/`; new RL runs still create fresh ones at the root.
+- Every study/report folder has a `README.md` index (root `README.md` has the map + ranked study index); `value_decomposition_study/report/README.md` ranks the reports.
 
 ## Reproducibility
 

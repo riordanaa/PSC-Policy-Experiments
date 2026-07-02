@@ -2,19 +2,35 @@
 
 Experimental snapshot of a Deep Reinforcement Learning (DRL) framework for ordering and allocation decisions in a multi-echelon pharmaceutical supply chain (PSC) under disruptions, plus a reward-shaping audit and a series of deterministic policy studies built on top of it.
 
-> **Start here: [`consolidated_report/consolidated_findings.pdf`](consolidated_report/)** — the single source of current truth across all studies (claims table with status codes, the four key findings, superseded-claims list, audit record). Several numbers in the individual study folders below are formally superseded there; do not cite a study-folder number without checking the consolidated claims table.
+> **Start here: [`value_decomposition_study/report/robustness_report.pdf`](value_decomposition_study/report/)** — **the capacity report**, the key result of the project so far: "shed" (the disrupted distributor deprioritizing its trust hospital so it reroutes) is a *capacity-conditional misaligned incentive* — privately rational at any capacity, system-destructive below healthy-chain capacity ≈ 180–240. Then [`lead_time_severity_report.pdf`](value_decomposition_study/report/) (its lead-time/severity follow-up). For everything from the earlier studies, check [`consolidated_report/consolidated_findings.pdf`](consolidated_report/) — the claims scorecard with status codes and a superseded-claims (do-not-cite) list — before citing any study-folder number.
 
-## Study index (newest first; each folder has its own report/cards)
+## Study index (newest first; every folder has its own README)
 
 | Folder | Question | Headline (audited) |
 |---|---|---|
-| `consolidated_report/` | single source of truth | claims table + 4 findings + do-not-cite list |
-| `value_decomposition_study/` | complete & stress-test the value decomposition; test the simple-rules-vs-RL hypothesis from the distributor's seat | info-sharing reroute ≡ perfect-onset oracle (bit-exact); simple distributor compound removes 49–51% of base stock's loss (thesis RL claimed 89%, unreplicated); lever-flip map (no action → routing → compound → buffer-only), robust to recurring disruptions; hypothesis cards H1–H10 in `hypotheses/` |
+| `value_decomposition_study/report/robustness_report.pdf` | **does the shed/rerouting result survive capacity stress, δ, and metric scrutiny? (the capacity report)** | shed = capacity-conditional misaligned incentive; system profit flips sign at MN2 ≈ 180–240; rerouted load amplified ~10× on the healthy chain; δ-invariant; trust hospital worse off than the captive at severe scarcity |
+| `value_decomposition_study/report/lead_time_severity_report.pdf` | do the capacity findings survive longer lead times and milder severities? | base stock auto-scales: backlog *falls* with lead time and the collapse mildens, but lost patients jump ~2.5× past lead time ~5; shed/flip is severity-gated (inert < ~65–80% cut) |
+| `value_decomposition_study/` (June 10–11 campaigns) | value decomposition; simple-rules-vs-RL from the distributor's seat | info-sharing reroute ≡ perfect-onset oracle (bit-exact); **the shed/taper finding**: simple distributor compound removes 49–51% of base stock's loss (thesis RL claimed 89%, unreplicated); lever-flip map; hypothesis cards H1–H10 |
+| `consolidated_report/` | claims scorecard (single source of truth up to June 11) | claims table + 4 findings + do-not-cite list (predates the two reports above) |
 | `understanding_study/` | with routing repaired, what's left? | allocation channel ≤12%; residual is mostly dead-factory bookkeeping; dynamics anatomy |
-| `routing_study/` | is the disruption pile-up physics or a routing artifact? | 67–91% of disruption cost removable by HC routing rules alone |
+| `routing_study/` | is the disruption pile-up physics or a routing artifact? | 67–91% of disruption cost removable by HC routing rules alone; **its `run_ladder.py`/`metrics.py` are the shared harness all later studies reuse** |
 | `reward_report_pdf/`, `reward_fix_report/` | does the thesis's shaped reward shape? does fixing it fix the agent? | reward components defective/saturated; repaired pipeline trains stably but loses to base stock on system profit |
 
 All studies: gated harness (bit-exact baseline reproduction, determinism, conservation), pre-registered tuning/reporting seed splits (1–10 / 11–30), dual cost accounting, and per-phase independent audits re-deriving headline numbers from raw CSVs.
+
+## Repository map (top level)
+
+| Path | What it is |
+|---|---|
+| `config.py`, `model_a2c.py`, `ds_world.py`, `simulator/`, `Test/` | The original DRL codebase (untouched by the studies — experiments inject parameters at runtime). See `CLAUDE.md` / `documentation/`. |
+| `value_decomposition_study/`, `routing_study/`, `understanding_study/` | The 2026 deterministic policy studies (each has a README; results CSVs are local-only). |
+| `consolidated_report/`, `reward_report_pdf/`, `reward_fix_report/` | Reports: the claims scorecard and the May reward-audit pair. |
+| `documentation/` | Deep dives: architecture, configuration, DRL/reward, simulator, studies, plotting. |
+| `r5_test_results*/` | Committed May-2026 RL diagnostic outputs (data, not code). `r5_test_results/memory/` is a local-only assistant-memory dir (gitignored). |
+| `gen_*.py`, `generate_plots.py`, `regen_plots.py`, `run_r5_diagnostic.py` | Reward-audit plot/diagnostic scripts (documented in `documentation/plotting-and-diagnostics.md`). |
+| `run_all_studies.sh`, `run_parallel.sh`, `run_batch_*.sh` | RL study batch runners (see Quick Start below). |
+| `archive/` | Historical local artifacts moved out of the root (old RL training checkpoints, logs). |
+| `meeting_transcripts/` | Local-only working notes (gitignored; not part of the public repo). |
 
 ## What this repository adds on top of the original codebase
 

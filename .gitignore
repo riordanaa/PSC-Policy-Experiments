@@ -32,6 +32,9 @@ r5_test_results/memory/
 meeting_transcripts/
 
 # LaTeX build intermediates and lock-workaround report duplicates
-**/report/_build/
+**/_build/
 *_latest.pdf
+
+# Archived local-only training checkpoints (moved from root training_1_*/)
+archive/training_runs/
 
