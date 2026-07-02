@@ -81,14 +81,20 @@ local-only).
 or un-ignore them) — this GitHub repo is PUBLIC and those folders hold confidential
 meeting/collaborator content. Keep them local even if told to "commit everything"; for a remote
 backup use a PRIVATE repo/gist, never this repo.**
-**Start every session by reading `meeting_transcripts/README.md`** (the catalog + read priority) and
-the meeting summaries — they hold the current research direction and next steps, and supersede the
-completed capacity/lead-time/severity thread below.
+**Start every session by reading `meeting_transcripts/README.md`** (the catalog + read priority),
+then the meeting **summaries** (always) and the **full transcripts of the most recent meetings** —
+they hold the current research direction and next steps, and supersede the completed
+capacity/lead-time/severity thread below.
 
 **READ the capacity report:** `value_decomposition_study/report/robustness_report.pdf` (markdown
 twin `value_decomposition_study/MEETING_NOTE.md`) — the rerouting/shed robustness study Ergun
 endorsed as the headline (the capacity-conditional misaligned-incentive finding). It is the anchor
-the meetings react to; read it before extending the work.
+the meetings react to; read it before extending the work. The ranked index of all reports (which is
+canonical, which superseded) is `value_decomposition_study/report/README.md`.
+
+**Local memory index:** `r5_test_results/memory/MEMORY.md` (gitignored) — the read-first list of
+memory files (cross-chat findings, paper summaries, working-style feedback, pending queue). After a
+context compaction, read it along with the meeting catalog above.
 
 A series of deterministic policy studies was run on this simulator (no RL). **Do not treat
 their findings as settled facts — treat them as claims with evidence, and check status
