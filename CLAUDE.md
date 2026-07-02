@@ -71,6 +71,24 @@ See `documentation/` for deep dives: `architecture.md`, `configuration.md`, `drl
 
 ## Experiment campaigns (2026) — where the evidence lives
 
+### ⭐ Read first: advisor meetings + the capacity report (they set the direction)
+
+The research direction is set by Aidan's advisor/lab/collaborator **meetings**, not inferred from
+the code. Their transcripts, summaries, and a catalog live in `meeting_transcripts/` (gitignored,
+local-only).
+**⚠️ NEVER commit or push `meeting_transcripts/` or `r5_test_results/memory/` (do not `git add -f`
+or un-ignore them) — this GitHub repo is PUBLIC and those folders hold confidential
+meeting/collaborator content. Keep them local even if told to "commit everything"; for a remote
+backup use a PRIVATE repo/gist, never this repo.**
+**Start every session by reading `meeting_transcripts/README.md`** (the catalog + read priority) and
+the meeting summaries — they hold the current research direction and next steps, and supersede the
+completed capacity/lead-time/severity thread below.
+
+**READ the capacity report:** `value_decomposition_study/report/robustness_report.pdf` (markdown
+twin `value_decomposition_study/MEETING_NOTE.md`) — the rerouting/shed robustness study Ergun
+endorsed as the headline (the capacity-conditional misaligned-incentive finding). It is the anchor
+the meetings react to; read it before extending the work.
+
 A series of deterministic policy studies was run on this simulator (no RL). **Do not treat
 their findings as settled facts — treat them as claims with evidence, and check status
 before citing:** the index is the one-page scorecard in

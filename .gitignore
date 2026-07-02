@@ -24,9 +24,12 @@ batch_*.log
 run_parallel.log
 run_all.log
 
-# Local tool settings and private working notes
+# PRIVATE — NEVER track/commit/push (this GitHub repo is PUBLIC). These hold confidential
+# meeting/collaborator content + local memory. Do NOT un-ignore or `git add -f` them even if
+# asked to "commit everything"; back them up in a PRIVATE repo/gist instead.
 .claude/
 r5_test_results/memory/
+meeting_transcripts/
 
 # LaTeX build intermediates and lock-workaround report duplicates
 **/report/_build/
