@@ -1,6 +1,6 @@
 # Documentation
 
-Deep-dive docs for the DRL pharmaceutical supply-chain simulator. Start with the root `README.md` for the user-facing overview and `CLAUDE.md` for the working-with-code summary. These files cover the internals.
+Deep-dive docs for the DRL pharmaceutical supply-chain simulator. Start with the root `README.md` for the user-facing overview. These files cover the internals.
 
 | File | Covers |
 |------|--------|

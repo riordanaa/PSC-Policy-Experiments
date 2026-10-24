@@ -28,6 +28,8 @@ run_all.log
 # meeting/collaborator content + local memory. Do NOT un-ignore or `git add -f` them even if
 # asked to "commit everything"; back them up in a PRIVATE repo/gist instead.
 .claude/
+CLAUDE.md
+value_decomposition_study/MEETING_NOTE.md
 r5_test_results/memory/
 meeting_transcripts/
 

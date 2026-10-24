@@ -1,5 +1,9 @@
 # PSC Policy Experiments
 
+> **In plain terms:** when a drug manufacturer is disrupted, how should distributors and hospitals reorder and reroute? In an agent-based simulation of a pharmaceutical supply chain, this repo tests a deep-RL ordering policy from prior work against simple, transparent rules. Findings so far: the simple rules match the RL agent, routing rules alone remove most of the cost of a disruption, and one locally rational move (a disrupted distributor "shedding" a hospital to another supplier) helps that distributor but can hurt the whole system when the healthy supplier has no spare capacity.
+>
+> *Work in progress: results are preliminary and unpublished. Part of Aidan Riordan's PhD research at Northeastern University (advisor: Ozlem Ergun).*
+
 Experimental snapshot of a Deep Reinforcement Learning (DRL) framework for ordering and allocation decisions in a multi-echelon pharmaceutical supply chain (PSC) under disruptions, plus a reward-shaping audit and a series of deterministic policy studies built on top of it.
 
 > **Start here: [`value_decomposition_study/report/robustness_report.pdf`](value_decomposition_study/report/)** — **the capacity report**, the key result of the project so far: "shed" (the disrupted distributor deprioritizing its trust hospital so it reroutes) is a *capacity-conditional misaligned incentive* — privately rational at any capacity, system-destructive below healthy-chain capacity ≈ 180–240. Then [`lead_time_severity_report.pdf`](value_decomposition_study/report/) (its lead-time/severity follow-up). For everything from the earlier studies, check [`consolidated_report/consolidated_findings.pdf`](consolidated_report/) — the claims scorecard with status codes and a superseded-claims (do-not-cite) list — before citing any study-folder number.
@@ -22,7 +26,7 @@ All studies: gated harness (bit-exact baseline reproduction, determinism, conser
 
 | Path | What it is |
 |---|---|
-| `config.py`, `model_a2c.py`, `ds_world.py`, `simulator/`, `Test/` | The original DRL codebase (untouched by the studies — experiments inject parameters at runtime). See `CLAUDE.md` / `documentation/`. |
+| `config.py`, `model_a2c.py`, `ds_world.py`, `simulator/`, `Test/` | The original DRL codebase (untouched by the studies — experiments inject parameters at runtime). See `documentation/`. |
 | `value_decomposition_study/`, `routing_study/`, `understanding_study/` | The 2026 deterministic policy studies (each has a README; results CSVs are local-only). |
 | `consolidated_report/`, `reward_report_pdf/`, `reward_fix_report/` | Reports: the claims scorecard and the May reward-audit pair. |
 | `documentation/` | Deep dives: architecture, configuration, DRL/reward, simulator, studies, plotting. |
@@ -55,7 +59,7 @@ This is a working copy of the original `Inventory_DRL_MAB` research code (A2C + 
 - `r5_test_results_basestock_ds1_disrupted/` — base-stock policy at the disrupted distributor, used as the comparison baseline.
 - `r5_test_results_dense_partial_05/` — Dense/partial-info configuration run.
 
-**Documentation:** `documentation/` contains deep dives (architecture, configuration, DRL and reward, simulator, studies, plotting) and thesis chapter summaries. `CLAUDE.md` is an orientation file for AI coding assistants.
+**Documentation:** `documentation/` contains deep dives (architecture, configuration, DRL and reward, simulator, studies, plotting) and thesis chapter summaries.
 
 **Status note:** with the repairs above the agent trains stably and holds a sensible policy, but it does not beat the base-stock baseline on cumulative system profit in this configuration; the comparison and caveats are laid out in the follow-up report. Treat results in this repo as diagnostics of this code version, not as a reproduction of the original thesis results.
 

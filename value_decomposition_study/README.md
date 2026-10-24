@@ -9,8 +9,7 @@ report (`report/robustness_report.pdf`) is the key output of this folder.
 **3. Capacity / robustness (June 22 — the capacity report):**
 `exp_robustness.py` (gated driver: capacity stress test, δ sweep, 2D grid),
 `analyze_robustness.py` (per-phase metrics, channels, fills), `make_robustness_figures.py`
-(fig1–fig9), `robustness_prereg.md` (pre-registration), `MEETING_NOTE.md` (markdown twin of the
-report) → `report/robustness_report.pdf`.
+(fig1–fig9), `robustness_prereg.md` (pre-registration) → `report/robustness_report.pdf`.
 
 **4. Lead time × severity (June 23):**
 `exp_leadtime.py` (wraps exp_robustness.run_cell; injects PHYSICAL/AGENT_LEAD_TIME and MN1
